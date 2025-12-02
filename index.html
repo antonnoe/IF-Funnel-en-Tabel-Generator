@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Infofrankrijk Funnel Manager v16</title>
+<title>Infofrankrijk Funnel Manager v17</title>
 <style>
     /* --- ADMIN DASHBOARD STYLING --- */
     body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f4f6f8; margin: 0; padding: 20px; color: #333; }
@@ -43,6 +43,15 @@
     .btn-keep { background: #f1c40f; color: #333; border: 1px solid #d4ac0d; width: 100%; padding: 15px; margin-bottom: 20px; font-size: 1.1em;}
     .btn-keep:hover { background: #f39c12; }
 
+    /* Speciale KASSA knoppen */
+    .output-options { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-bottom: 20px; }
+    .btn-opt { padding: 20px; font-size: 1.1em; border: 2px solid transparent; color: white; }
+    .btn-opt:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+    
+    .opt-all { background: #27ae60; } /* Groen */
+    .opt-tiles { background: #2980b9; } /* Blauw */
+    .opt-table { background: #e67e22; } /* Oranje */
+
     /* Toast Notification */
     #toast {
         visibility: hidden; min-width: 250px; margin-left: -125px; background-color: #333; color: #fff; text-align: center; border-radius: 4px; padding: 16px; position: fixed; z-index: 1000; left: 50%; bottom: 30px; font-size: 17px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);
@@ -78,7 +87,7 @@
 <div class="container">
     <header>
         <h1>Infofrankrijk Funnel Manager</h1>
-        <div class="version">v16 WP-Proof</div>
+        <div class="version">v17 Multi-Export</div>
     </header>
 
     <div class="tabs">
@@ -90,11 +99,8 @@
 
     <div id="tab-backup" class="tab-content active">
         <div style="background: #e3f2fd; color: #0d47a1; padding: 15px; border-left: 5px solid #2196f3; margin-bottom: 25px;">
-            <strong>Instructie voor beheerders:</strong><br>
-            Deze tool slaat niets op het internet op. Jij bent de beheerder.<br>
-            1. Open de Google Keep notitie hieronder.<br>
-            2. Kopieer de code uit "Huidige Data" naar Keep als je klaar bent.<br>
-            3. Begin je net? Plak de code uit Keep in "Data Herstellen" om verder te gaan.
+            <strong>Instructie:</strong><br>
+            Je hebt maar <strong>één Keep notitie</strong> nodig voor alles. De keuze wat je wilt publiceren (alleen tabel, alleen tegels of alles) maak je pas bij Tabblad 4.
         </div>
 
         <div class="backup-container">
@@ -181,12 +187,29 @@
     </div>
 
     <div id="tab-code" class="tab-content">
-        <div style="text-align:center; max-width: 600px; margin: 0 auto;">
-            <h2 style="color:#27ae60; margin-bottom: 10px;">Klaar voor publicatie?</h2>
-            <p style="color:#666; margin-bottom: 25px;">Klik op de knop. Er wordt een compleet blok "platte" HTML gegenereerd. Plak dit in de <strong>TEKST</strong>-tab van je WordPress editor en schakel <strong>NIET</strong> terug naar Visueel.</p>
-            <button class="btn btn-success" onclick="generateCode()">GENEREER & KOPIEER CODE</button>
+        <div style="text-align:center; max-width: 800px; margin: 0 auto;">
+            <h2 style="color:#333; margin-bottom: 20px;">Wat wil je publiceren?</h2>
+            
+            <div class="output-options">
+                <button class="btn btn-opt opt-all" onclick="generateCode('all')">
+                    <strong>📦 ALLES (Funnel)</strong><br>
+                    <span style="font-size:0.8em; opacity:0.8">Tegels + Tabel + Uitklap</span>
+                </button>
+                
+                <button class="btn btn-opt opt-tiles" onclick="generateCode('tiles')">
+                    <strong>🖼️ ALLEEN TEGELS</strong><br>
+                    <span style="font-size:0.8em; opacity:0.8">Het grid met plaatjes</span>
+                </button>
+                
+                <button class="btn btn-opt opt-table" onclick="generateCode('table')">
+                    <strong>📊 ALLEEN TABEL</strong><br>
+                    <span style="font-size:0.8em; opacity:0.8">De vergelijking</span>
+                </button>
+            </div>
+
+            <p id="codeInstruction" style="color:#666; margin-bottom: 10px; font-style:italic;">Kies een optie hierboven...</p>
         </div>
-        <textarea id="finalCode" style="width:100%; height:400px; margin-top:30px; border:1px solid #ddd; padding:15px; font-family:monospace; color:#555;" readonly onclick="this.select()"></textarea>
+        <textarea id="finalCode" style="width:100%; height:300px; margin-top:10px; border:1px solid #ddd; padding:15px; font-family:monospace; color:#555;" readonly onclick="this.select()"></textarea>
     </div>
 </div>
 
@@ -224,7 +247,7 @@ let appData = JSON.parse(JSON.stringify(defaultData));
 
 /* INIT & TABS */
 function init() {
-    const saved = localStorage.getItem('if_v16_data');
+    const saved = localStorage.getItem('if_v17_data');
     if(saved) appData = JSON.parse(saved);
     renderTiles();
     renderTable();
@@ -246,7 +269,7 @@ function showToast(msg, type="success") {
 }
 
 function saveData() {
-    localStorage.setItem('if_v16_data', JSON.stringify(appData));
+    localStorage.setItem('if_v17_data', JSON.stringify(appData));
     updateExportArea();
 }
 
@@ -380,31 +403,56 @@ function importData() {
 }
 function resetToDefault() { if(confirm("Resetten naar standaard?")) { appData = JSON.parse(JSON.stringify(defaultData)); renderTiles(); renderTable(); saveData(); showToast("🔄 Reset voltooid"); } }
 
-/* CODE GENERATOR (MINIFIED) */
-function generateCode() {
-    let tilesHTML = '<div class="if-grid">';
-    appData.tiles.forEach(t => {
-        tilesHTML += `<div class="if-card"><div class="if-card-img" style="background-image:url('${t.img}')"></div><div class="if-card-content"><h3>${t.title}</h3><p>${t.text}</p></div></div>`;
-    });
-    tilesHTML += '</div>';
+/* =========================================================
+   DE GENERATOR ENGINE (V17 - Multi Mode)
+   ========================================================= */
+function generateCode(mode) {
+    
+    // 1. GENERATE PARTS
+    let tilesHTML = '';
+    if(mode === 'all' || mode === 'tiles') {
+        tilesHTML = '<div class="if-grid">';
+        appData.tiles.forEach(t => {
+            tilesHTML += `<div class="if-card"><div class="if-card-img" style="background-image:url('${t.img}')"></div><div class="if-card-content"><h3>${t.title}</h3><p>${t.text}</p></div></div>`;
+        });
+        tilesHTML += '</div>';
+    }
 
     let tableHTML = '';
-    appData.table.forEach(r => {
-        if(r.type === 'header') {
-            tableHTML += `<tr><td colspan="3" class="if-th">${r.name}</td></tr>`;
-        } else {
-            let linkHTML = r.link ? `<a href="${r.link}" target="_blank" class="if-link-icon"><svg viewBox="0 0 24 24"><path d="M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3m-2 16H5V5h7V3H5c-1.11 0-2 .89-2 2v14c0 1.11.89 2 2 2h14c1.11 0 2-.89 2-2v-7h-2v7z"/></svg></a>` : '';
-            tableHTML += `<tr><td class="if-td-name">${r.name}${linkHTML}</td><td class="if-icon">${r.vis?'<span class="c-yes">✔</span>':'<span class="c-no">✘</span>'}</td><td class="if-icon bg-sub">${r.sub?'<span class="c-yes">✔</span>':'<span class="c-no">✘</span>'}</td></tr>`;
+    if(mode === 'all' || mode === 'table') {
+        tableHTML = '<table class="if-tbl"><thead><tr><th class="tl">DIENST / INSTRUMENT</th><th>BEZOEKER</th><th>ABONNEE</th></tr></thead><tbody>';
+        appData.table.forEach(r => {
+            if(r.type === 'header') {
+                tableHTML += `<tr><td colspan="3" class="if-th">${r.name}</td></tr>`;
+            } else {
+                let linkHTML = r.link ? `<a href="${r.link}" target="_blank" class="if-link-icon"><svg viewBox="0 0 24 24"><path d="M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3m-2 16H5V5h7V3H5c-1.11 0-2 .89-2 2v14c0 1.11.89 2 2 2h14c1.11 0 2-.89 2-2v-7h-2v7z"/></svg></a>` : '';
+                tableHTML += `<tr><td class="if-td-name">${r.name}${linkHTML}</td><td class="if-icon">${r.vis?'<span class="c-yes">✔</span>':'<span class="c-no">✘</span>'}</td><td class="if-icon bg-sub">${r.sub?'<span class="c-yes">✔</span>':'<span class="c-no">✘</span>'}</td></tr>`;
+            }
+        });
+        tableHTML += `<tr><td style="font-weight:bold; color:#800000;">KOSTEN</td><td style="text-align:center;">Gratis</td><td style="text-align:center; font-weight:bold; color:#800000; background:#fffbfc;">€49 / jaar</td></tr></tbody></table>`;
+        if(mode !== 'all') { // CTA alleen toevoegen bij losse tabel
+             tableHTML += `<div style="text-align:center; margin-top: 30px;"><a href="https://infofrankrijk.tempurl.host/abonnement/" class="if-btn" style="display:block; max-width:400px; margin:0 auto; padding: 15px; font-size: 18px;">Word abonnee, meld je aan</a></div>`;
         }
-    });
+    }
 
-    // MASTER STRING (NO NEWLINES!)
+    // 2. MASTER CSS (Keep it simple, include all for robustness)
     let css = `<style>.if-onboard{font-family:'Segoe UI',Tahoma,sans-serif;max-width:900px;margin:0 auto;color:#333;line-height:1.5}.if-onboard *{box-sizing:border-box}.if-btn-row{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:30px}.if-btn{flex:1 1 200px;text-align:center;padding:12px 15px;background:#800000;color:white!important;text-decoration:none;border-radius:4px;font-weight:600;font-size:16px;border:1px solid #800000;cursor:pointer;transition:0.2s;font-family:inherit;display:inline-block}.if-btn:hover{background:#600000;transform:translateY(-1px)}.if-btn-gray{background:#555;border-color:#555}.if-btn-gray:hover{background:#333}.if-hidden{display:none!important}.if-visible{display:block!important;animation:ifSlideDown 0.5s ease-out}@keyframes ifSlideDown{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}.if-grid{display:grid!important;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))!important;gap:20px!important;margin-bottom:30px}.if-card{border:1px solid #eee;border-radius:8px;overflow:hidden;background:white;box-shadow:0 4px 6px rgba(0,0,0,0.05);display:flex;flex-direction:column;height:100%}.if-card-img{height:180px;background-size:cover;background-position:center;background-color:#f9f9f9;border-bottom:1px solid #eee;flex-shrink:0}.if-card-content{padding:20px;flex-grow:1;display:flex;flex-direction:column}.if-card-content h3{color:#800000;margin:0 0 10px 0;font-size:18px;line-height:1.3}.if-card-content p{margin:0;color:#555;font-size:16px}.if-tbl{width:100%;border-collapse:collapse;margin-bottom:30px;border:1px solid #eee;font-size:15px}.if-tbl th{background:white;color:#800000;padding:15px;text-align:center;border-bottom:3px solid #800000;font-size:16px;text-transform:uppercase}.if-tbl th.tl{text-align:left;width:50%}.if-tbl td{padding:12px 10px;border-bottom:1px solid #eee;vertical-align:middle}.if-th{background:#f2f2f2;color:#800000;font-weight:bold;text-transform:uppercase;font-size:14px;letter-spacing:1px;padding:15px!important}.if-icon{text-align:center;font-size:18px}.bg-sub{background-color:#fffbfc}.c-yes{color:#27ae60;font-weight:bold}.c-no{color:#ccc}.if-link-icon svg{width:14px;height:14px;fill:#800000;margin-left:5px;opacity:0.6;vertical-align:middle}.if-h1{color:#800000;font-size:28px;font-weight:700;margin:0 0 10px 0}.if-intro{font-size:18px;color:#555;margin:0 0 25px 0}</style>`;
     
-    let html = `<div class="if-onboard"><h1 class="if-h1">Direct toegang nodig?</h1><p class="if-intro">Voor dit instrument is een Infofrankrijk abonnement vereist.</p><div class="if-btn-row"><a href="https://infofrankrijk.tempurl.host/abonnement/" class="if-btn">Word abonnee, meld je aan</a><a href="https://infofrankrijk.tempurl.host/aanmelden" class="if-btn">Log in</a><button onclick="var el=document.getElementById('if-fold-1');if(el.classList.contains('if-hidden')){el.classList.remove('if-hidden');el.classList.add('if-visible');this.innerText='Sluit overzicht';}else{el.classList.remove('if-visible');el.classList.add('if-hidden');this.innerText='De voordelen van een abonnement';}" class="if-btn">De voordelen van een abonnement</button></div><div id="if-fold-1" class="if-hidden"><h2 style="color:#800000; margin-bottom: 20px;">Wat krijg je als abonnee?</h2>${tilesHTML}<div style="text-align:center; padding: 20px 0; border-top: 1px solid #eee;"><button onclick="var el=document.getElementById('if-fold-2');if(el.classList.contains('if-hidden')){el.classList.remove('if-hidden');el.classList.add('if-visible');this.innerText='Verberg tabel';}else{el.classList.remove('if-visible');el.classList.add('if-hidden');this.innerText='Bekijk de vergelijkingstabel';}" class="if-btn if-btn-gray" style="max-width:300px;">Bekijk de vergelijkingstabel</button></div></div><div id="if-fold-2" class="if-hidden"><h2 style="color:#800000; margin-top: 30px;">Gratis vs. Abonnee</h2><table class="if-tbl"><thead><tr><th class="tl">DIENST / INSTRUMENT</th><th>BEZOEKER</th><th>ABONNEE</th></tr></thead><tbody>${tableHTML}<tr><td style="font-weight:bold; color:#800000;">KOSTEN</td><td style="text-align:center;">Gratis</td><td style="text-align:center; font-weight:bold; color:#800000; background:#fffbfc;">€49 / jaar</td></tr></tbody></table><div style="text-align:center; margin-top: 30px;"><a href="https://infofrankrijk.tempurl.host/abonnement/" class="if-btn" style="display:block; max-width:400px; margin:0 auto; padding: 15px; font-size: 18px;">Word abonnee, meld je aan</a></div></div></div>`;
+    // 3. BUILD OUTPUT BASED ON MODE
+    let outputHTML = '';
+    
+    if(mode === 'all') {
+        outputHTML = `<div class="if-onboard"><h1 class="if-h1">Direct toegang nodig?</h1><p class="if-intro">Voor dit instrument is een Infofrankrijk abonnement vereist.</p><div class="if-btn-row"><a href="https://infofrankrijk.tempurl.host/abonnement/" class="if-btn">Word abonnee, meld je aan</a><a href="https://infofrankrijk.tempurl.host/aanmelden" class="if-btn">Log in</a><button onclick="var el=document.getElementById('if-fold-1');if(el.classList.contains('if-hidden')){el.classList.remove('if-hidden');el.classList.add('if-visible');this.innerText='Sluit overzicht';}else{el.classList.remove('if-visible');el.classList.add('if-hidden');this.innerText='De voordelen van een abonnement';}" class="if-btn">De voordelen van een abonnement</button></div><div id="if-fold-1" class="if-hidden"><h2 style="color:#800000; margin-bottom: 20px;">Wat krijg je als abonnee?</h2>${tilesHTML}<div style="text-align:center; padding: 20px 0; border-top: 1px solid #eee;"><button onclick="var el=document.getElementById('if-fold-2');if(el.classList.contains('if-hidden')){el.classList.remove('if-hidden');el.classList.add('if-visible');this.innerText='Verberg tabel';}else{el.classList.remove('if-visible');el.classList.add('if-hidden');this.innerText='Bekijk de vergelijkingstabel';}" class="if-btn if-btn-gray" style="max-width:300px;">Bekijk de vergelijkingstabel</button></div></div><div id="if-fold-2" class="if-hidden"><h2 style="color:#800000; margin-top: 30px;">Gratis vs. Abonnee</h2>${tableHTML}<div style="text-align:center; margin-top: 30px;"><a href="https://infofrankrijk.tempurl.host/abonnement/" class="if-btn" style="display:block; max-width:400px; margin:0 auto; padding: 15px; font-size: 18px;">Word abonnee, meld je aan</a></div></div></div>`;
+    } 
+    else if(mode === 'tiles') {
+        outputHTML = `<div class="if-onboard">${tilesHTML}</div>`;
+    } 
+    else if(mode === 'table') {
+        outputHTML = `<div class="if-onboard">${tableHTML}</div>`;
+    }
 
     const out = document.getElementById('finalCode');
-    out.value = css + html;
+    out.value = css + outputHTML;
     out.select();
     document.execCommand('copy');
     showToast("✅ Code gekopieerd! Plak in 'Tekst' tab van WP.");
