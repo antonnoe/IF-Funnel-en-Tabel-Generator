@@ -3,33 +3,29 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Infofrankrijk Funnel Manager</title>
+<title>Infofrankrijk Funnel Manager v14</title>
 <style>
-    /* --- ADMIN DASHBOARD STYLING (Niet voor de website, maar voor JOU) --- */
+    /* --- ADMIN DASHBOARD STYLING --- */
     body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f4f6f8; margin: 0; padding: 20px; color: #333; }
     .container { max-width: 1200px; margin: 0 auto; background: white; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); overflow: hidden; }
     
-    /* Header */
     header { background: #800000; color: white; padding: 20px 30px; display: flex; justify-content: space-between; align-items: center; }
-    h1 { margin: 0; font-size: 1.4em; font-weight: 600; }
-    .version-tag { background: rgba(255,255,255,0.2); padding: 4px 10px; border-radius: 4px; font-size: 0.8em; }
-
+    h1 { margin: 0; font-size: 1.4em; }
+    
     /* Tabs */
     .tabs { display: flex; background: #eee; border-bottom: 1px solid #ddd; }
-    .tab { padding: 15px 25px; cursor: pointer; font-weight: bold; border: none; background: none; color: #555; outline: none; transition: 0.2s; }
+    .tab { padding: 15px 20px; cursor: pointer; font-weight: bold; border: none; background: none; color: #555; outline: none; transition: 0.2s; border-right: 1px solid #ddd;}
     .tab.active { background: white; color: #800000; border-top: 4px solid #800000; }
     .tab:hover:not(.active) { background: #e0e0e0; }
     .tab-content { padding: 30px; display: none; }
-    .tab-content.active { display: block; animation: fadeIn 0.3s; }
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .tab-content.active { display: block; }
 
-    /* Forms */
+    /* Forms & Inputs */
     .panel { background: #f8f9fa; border: 1px solid #e9ecef; padding: 20px; border-radius: 6px; margin-bottom: 20px; }
     .form-row { display: flex; gap: 15px; margin-bottom: 15px; }
     .form-group { flex: 1; }
     label { display: block; font-weight: bold; margin-bottom: 5px; font-size: 0.85em; color: #666; text-transform: uppercase; }
     input[type="text"], textarea, select { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 1em; }
-    input:focus, textarea:focus { border-color: #800000; outline: none; }
     textarea { height: 80px; resize: vertical; }
 
     /* Buttons */
@@ -37,17 +33,16 @@
     .btn-primary { background: #800000; color: white; }
     .btn-primary:hover { background: #600000; }
     .btn-success { background: #27ae60; color: white; width: 100%; justify-content: center; font-size: 1.1em; padding: 15px; }
-    .btn-success:hover { background: #219150; }
     .btn-danger { background: #fee2e2; color: #c53030; padding: 6px 12px; font-size: 0.9em; }
-    .btn-danger:hover { background: #fecaca; }
     .btn-action { background: #e2e8f0; color: #4a5568; padding: 6px 10px; }
-    .btn-action:hover { background: #cbd5e0; }
-    .btn-keep { background: #f1c40f; color: #333; border: 1px solid #d4ac0d; }
+    .btn-keep { background: #f1c40f; color: #333; border: 1px solid #d4ac0d; width: 100%; justify-content: center; padding: 15px; margin-bottom: 20px; font-size: 1.1em;}
     .btn-keep:hover { background: #f39c12; }
 
-    /* Previews (Admin side) */
+    /* Admin Previews */
     .tile-grid-preview { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px; }
-    .tile-card { background: white; border: 1px solid #ddd; border-radius: 6px; overflow: hidden; display: flex; flex-direction: column; }
+    .tile-card { background: white; border: 1px solid #ddd; border-radius: 6px; overflow: hidden; display: flex; flex-direction: column; position: relative; }
+    .tile-card:hover { border-color: #800000; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    .edit-hint { position: absolute; top: 5px; right: 5px; background: rgba(255,255,255,0.9); padding: 2px 5px; font-size: 0.7em; border-radius: 3px; border: 1px solid #ccc; pointer-events: none;}
     .tile-img { height: 120px; background-color: #eee; background-size: cover; background-position: center; border-bottom: 1px solid #eee; }
     .tile-body { padding: 10px; flex: 1; display: flex; flex-direction: column; }
     .tile-title { font-weight: bold; color: #800000; margin-bottom: 5px; font-size: 0.95em; }
@@ -60,10 +55,8 @@
     .check-yes { color: #27ae60; font-weight: bold; }
     .check-no { color: #cbd5e0; }
 
-    /* Backup Area */
     .backup-container { background: #2d3748; padding: 25px; border-radius: 6px; color: white; }
-    .backup-textarea { width: 100%; height: 120px; background: #1a202c; color: #a0aec0; border: 1px solid #4a5568; padding: 15px; font-family: monospace; border-radius: 4px; box-sizing: border-box; margin: 10px 0; }
-    
+    .backup-textarea { width: 100%; height: 100px; background: #1a202c; color: #a0aec0; border: 1px solid #4a5568; padding: 10px; font-family: monospace; border-radius: 4px; box-sizing: border-box; margin: 5px 0; }
 </style>
 </head>
 <body>
@@ -71,19 +64,53 @@
 <div class="container">
     <header>
         <h1>Infofrankrijk Funnel Manager</h1>
-        <div class="version-tag">v13 GitHub Edition</div>
+        <div style="font-size:0.8em; opacity:0.8;">v14 Master Edition</div>
     </header>
 
     <div class="tabs">
-        <button class="tab active" onclick="switchTab('tiles')">1. De Tegels (Vitrine)</button>
-        <button class="tab" onclick="switchTab('table')">2. De Tabel (Vergelijking)</button>
-        <button class="tab" onclick="switchTab('code')">3. KASSA (Code Genereren)</button>
-        <button class="tab" onclick="switchTab('backup')">4. Opslaan & Laden</button>
+        <button class="tab active" onclick="switchTab('backup')">1. START & BACKUP</button>
+        <button class="tab" onclick="switchTab('tiles')">2. De Tegels (Vitrine)</button>
+        <button class="tab" onclick="switchTab('table')">3. De Tabel (Vergelijking)</button>
+        <button class="tab" onclick="switchTab('code')">4. KASSA (Code)</button>
     </div>
 
-    <div id="tab-tiles" class="tab-content active">
+    <div id="tab-backup" class="tab-content active">
+        <div style="background: #e3f2fd; color: #0d47a1; padding: 15px; border-left: 5px solid #2196f3; margin-bottom: 25px;">
+            <strong>Instructie voor beheerders:</strong><br>
+            Deze tool heeft geen database. Je moet je werk zelf opslaan.<br>
+            1. Open de Google Keep notitie hieronder.<br>
+            2. Kopieer de code uit "Huidige Data" naar Keep als je klaar bent.<br>
+            3. Begin je net? Plak de code uit Keep in "Data Herstellen" om verder te gaan.
+        </div>
+
+        <div class="backup-container">
+            <a href="https://keep.google.com/#NOTE/19zNWkbyH7Ou878ICDUN6DQjTCJzadyE7LvUlsKwnqtnnE7Jwt-31gtf7u0CyZskj" target="_blank" class="btn btn-keep">
+                📝 1. KLIK HIER: Open Google Keep Notitie
+            </a>
+
+            <div style="display:flex; gap: 20px; flex-wrap: wrap;">
+                <div style="flex:1;">
+                    <label style="color:#a0aec0;">2. Huidige Data (Kopiëren na bewerken):</label>
+                    <textarea id="exportArea" class="backup-textarea" readonly onclick="this.select()"></textarea>
+                    <button class="btn btn-primary" onclick="copyExport()">Kopieer naar klembord</button>
+                </div>
+                <div style="flex:1;">
+                    <label style="color:#a0aec0;">3. Data Herstellen (Plakken om te starten):</label>
+                    <textarea id="importArea" class="backup-textarea" placeholder="Plak hier je JSON code..."></textarea>
+                    <button class="btn btn-primary" style="background:#f39c12;" onclick="importData()">Data Inladen</button>
+                </div>
+            </div>
+            
+            <div style="margin-top: 30px; text-align:right; border-top: 1px solid #4a5568; padding-top: 15px;">
+                <button class="btn btn-danger" onclick="resetToDefault()">Reset naar Fabrieksinstellingen</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="tab-tiles" class="tab-content">
         <div class="panel">
-            <h3>Nieuwe Tegel Toevoegen</h3>
+            <h3>Tegel Bewerken / Toevoegen</h3>
+            <p style="font-size:0.9em; color:#666; margin-top:-10px;">Klik op een tegel hieronder om hem aan te passen.</p>
             <div class="form-row">
                 <div class="form-group">
                     <label>Titel</label>
@@ -98,7 +125,7 @@
                 <label>Korte Tekst (Wervend)</label>
                 <textarea id="tileText" placeholder="Beschrijf in 1 zin wat de bezoeker aan deze tool heeft..."></textarea>
             </div>
-            <button class="btn btn-primary" onclick="addTile()">+ Toevoegen aan overzicht</button>
+            <button class="btn btn-primary" onclick="addTile()">+ Opslaan / Toevoegen</button>
         </div>
         
         <div id="tileList" class="tile-grid-preview"></div>
@@ -156,87 +183,30 @@
         </div>
         <textarea id="finalCode" style="width:100%; height:400px; margin-top:30px; border:1px solid #ddd; padding:15px; font-family:monospace; color:#555;" readonly onclick="this.select()"></textarea>
     </div>
-
-    <div id="tab-backup" class="tab-content">
-        <div class="backup-container">
-            <h3 style="margin-top:0; color:#f1c40f;">⚠️ Vergeet niet op te slaan!</h3>
-            <p>GitHub slaat je data <strong>niet</strong> op. Als je deze pagina ververst, ben je niet-opgeslagen wijzigingen kwijt.</p>
-            <p>Gebruik de Google Keep knop hieronder om je "Save Game" te bewaren.</p>
-            
-            <a href="https://keep.google.com/#NOTE/19zNWkbyH7Ou878ICDUN6DQjTCJzadyE7LvUlsKwnqtnnE7Jwt-31gtf7u0CyZskj" target="_blank" class="btn btn-keep">
-                📝 Open Mijn Google Keep Notitie
-            </a>
-
-            <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #4a5568;">
-                <label style="color:#a0aec0;">1. Huidige Data (Kopieer dit naar Keep):</label>
-                <textarea id="exportArea" class="backup-textarea" readonly onclick="this.select()"></textarea>
-                <button class="btn btn-primary" onclick="copyExport()">Kopieer Data</button>
-            </div>
-
-            <div style="margin-top: 30px;">
-                <label style="color:#a0aec0;">2. Data Herstellen (Plak hier vanuit Keep):</label>
-                <textarea id="importArea" class="backup-textarea" placeholder="Plak je opgeslagen JSON code hier..."></textarea>
-                <button class="btn btn-primary" style="background:#f39c12;" onclick="importData()">Data Inladen</button>
-            </div>
-            
-            <div style="margin-top: 50px; text-align:right;">
-                <button class="btn btn-danger" onclick="resetToDefault()">Fabrieksinstellingen (Reset)</button>
-            </div>
-        </div>
-    </div>
 </div>
 
 <script>
-/* =================================================================
-   INFOFRANKRIJK DATA STORE
-   Hier staat de 'Start Data' hardcoded in.
-   =================================================================
-*/
+/* --- DATA STORE (Hardcoded Start Data) --- */
 const defaultData = {
     tiles: [
-        {
-            title: "Hier vind je overheden in de buurt",
-            img: "https://infofrankrijk.com/wp-content/uploads/2024/02/overheden-kaart.png", // Voorbeeld, pas aan in tool
-            text: "Voer je postcode in en krijg direct een helder overzicht van de contactgegevens van alle overheden en instellingen."
-        },
-        {
-            title: "Plus Value Calculator",
-            img: "https://infofrankrijk.com/wp-content/uploads/2024/02/plus-value.png", // Voorbeeld
-            text: "Voer de basisgegevens in en je krijgt een gedetailleerde doorrekening van de plus value belasting die je zou betalen bij verkoop."
-        },
-        {
-            title: "Bruto-Netto Calculator",
-            img: "https://infofrankrijk.com/wp-content/uploads/2024/02/bruto-netto.png", // Voorbeeld
-            text: "Bereken je netto inkomen aan de hand van duidelijke parameters en een volledig overzicht van alle inkomstenbronnen."
-        },
-        {
-            title: "Beroepenchecker",
-            img: "https://infofrankrijk.com/wp-content/uploads/2024/02/beroepen.png", // Voorbeeld
-            text: "Een duidelijk overzicht van beroepseisen: wordt jouw Nederlandse diploma in Frankrijk erkend?"
-        }
+        { title: "Overheden in de buurt", img: "https://infofrankrijk.com/wp-content/uploads/2024/02/overheden-kaart.png", text: "Voer je postcode in en krijg direct een helder overzicht van alle contactgegevens." },
+        { title: "Plus Value Calculator", img: "https://infofrankrijk.com/wp-content/uploads/2024/02/plus-value.png", text: "Gedetailleerde doorrekening van de plus value belasting bij verkoop." },
+        { title: "Bruto-Netto Calculator", img: "https://infofrankrijk.com/wp-content/uploads/2024/02/bruto-netto.png", text: "Bereken je netto inkomen aan de hand van duidelijke parameters." },
+        { title: "Beroepenchecker", img: "https://infofrankrijk.com/wp-content/uploads/2024/02/beroepen.png", text: "Check of jouw Nederlandse diploma in Frankrijk erkend wordt." }
     ],
     table: [
         {type: "header", name: "Algemeen"},
-        {type: "item", name: "Infofrankrijk; de basis (vele artikelen)", vis: true, sub: true},
-        {type: "item", name: "Dagelijkse nieuwsbrief (gerenoveerd in 2026!)", link: "https://infofrankrijk.tempurl.host/nieuwsbrief/", vis: true, sub: true},
-        {type: "item", name: "Het forum van Nederlanders.fr blijft gratis", vis: true, sub: true},
-        
+        {type: "item", name: "Infofrankrijk; de basis", vis: true, sub: true},
+        {type: "item", name: "Dagelijkse nieuwsbrief", link: "https://infofrankrijk.tempurl.host/nieuwsbrief/", vis: true, sub: true},
+        {type: "item", name: "Het forum van Nederlanders.fr", vis: true, sub: true},
         {type: "header", name: "DOSSIERS"},
         {type: "item", name: "Ondernemen in Frankrijk", vis: true, sub: true},
         {type: "item", name: "Vastgoedbezit in Frankrijk", vis: true, sub: true},
-        {type: "item", name: "85 PDF bestanden uit 'Klussen in Frankrijk'", link: "https://infofrankrijk.tempurl.host/2025/08/26/klussen/", vis: true, sub: true},
-        
-        {type: "header", name: "Bij u in de buurt"},
-        {type: "item", name: "Internet beschikbaarheid", link: "https://infofrankrijk.tempurl.host/2025/11/12/internet/", vis: true, sub: true},
-        {type: "item", name: "Overheden en instellingen", link: "https://infofrankrijk.tempurl.host/2025/11/14/overheden/", vis: true, sub: true},
-        
+        {type: "item", name: "85 PDF bestanden 'Klussen'", link: "https://infofrankrijk.tempurl.host/2025/08/26/klussen/", vis: true, sub: true},
         {type: "header", name: "SIMULATIE- EN REKENMODULES"},
-        {type: "item", name: "Periodieke nieuwsbrief & nieuwe tools", vis: false, sub: true},
-        {type: "item", name: "Zorgkompas Frankrijk: simulator", link: "https://infofrankrijk.tempurl.host/2025/11/21/zorgkompas/", vis: false, sub: true},
-        {type: "item", name: "Database onroerend goed zoeken", vis: false, sub: true},
-        {type: "item", name: "Bruto-Netto simulator NL <> FR", link: "https://infofrankrijk.tempurl.host/2025/11/10/financieel/", vis: false, sub: true},
-        {type: "item", name: "Simulatiemodule Energieverbruik", link: "https://infofrankrijk.tempurl.host/2025/09/22/energie/", vis: false, sub: true},
-        {type: "item", name: "Beroepenchecker", link: "https://infofrankrijk.tempurl.host/2025/11/20/werken/", vis: false, sub: true}
+        {type: "item", name: "Zorgkompas Frankrijk", link: "https://infofrankrijk.tempurl.host/2025/11/21/zorgkompas/", vis: false, sub: true},
+        {type: "item", name: "Database onroerend goed", vis: false, sub: true},
+        {type: "item", name: "Bruto-Netto simulator", link: "https://infofrankrijk.tempurl.host/2025/11/10/financieel/", vis: false, sub: true}
     ]
 };
 
@@ -244,17 +214,15 @@ let appData = JSON.parse(JSON.stringify(defaultData));
 
 /* --- INIT --- */
 function init() {
-    // Check localstorage
-    const saved = localStorage.getItem('if_v13_data');
+    const saved = localStorage.getItem('if_v14_data');
     if(saved) appData = JSON.parse(saved);
-    
     renderTiles();
     renderTable();
     updateExportArea();
 }
 
 function saveData() {
-    localStorage.setItem('if_v13_data', JSON.stringify(appData));
+    localStorage.setItem('if_v14_data', JSON.stringify(appData));
     updateExportArea();
 }
 
@@ -262,7 +230,6 @@ function updateExportArea() {
     document.getElementById('exportArea').value = JSON.stringify(appData);
 }
 
-/* --- TABS --- */
 function switchTab(id) {
     document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
     document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
@@ -270,23 +237,38 @@ function switchTab(id) {
     event.target.classList.add('active');
 }
 
-/* --- TILES LOGIC --- */
+/* --- TILES --- */
 function addTile() {
     const t = {
         title: document.getElementById('tileTitle').value,
-        img: document.getElementById('tileImg').value || "https://via.placeholder.com/600x350/eee/800000?text=Afbeelding+Ontbreekt",
+        img: document.getElementById('tileImg').value || "https://via.placeholder.com/600x350/eee/800000?text=Afbeelding",
         text: document.getElementById('tileText').value
     };
     if(!t.title) return alert("Titel is verplicht!");
     appData.tiles.push(t);
+    clearTileInputs();
+    renderTiles();
+    saveData();
+}
+
+function loadTileToEdit(idx) {
+    // Laad data in inputs
+    const t = appData.tiles[idx];
+    document.getElementById('tileTitle').value = t.title;
+    document.getElementById('tileImg').value = t.img;
+    document.getElementById('tileText').value = t.text;
     
-    // Clear
+    // Verwijder de oude direct (simpele edit flow)
+    if(confirm("Je bewerkt nu tegel: '" + t.title + "'. De oude versie wordt verwijderd zodra je op 'Opslaan' klikt. (Klik OK om te bewerken).")) {
+        appData.tiles.splice(idx, 1);
+        renderTiles();
+    }
+}
+
+function clearTileInputs() {
     document.getElementById('tileTitle').value = "";
     document.getElementById('tileImg').value = "";
     document.getElementById('tileText').value = "";
-    
-    renderTiles();
-    saveData();
 }
 
 function deleteTile(idx) {
@@ -302,23 +284,23 @@ function renderTiles() {
     list.innerHTML = "";
     appData.tiles.forEach((t, i) => {
         list.innerHTML += `
-            <div class="tile-card">
+            <div class="tile-card" onclick="loadTileToEdit(${i})" style="cursor:pointer;" title="Klik om te bewerken">
+                <div class="edit-hint">✎ Klik om te bewerken</div>
                 <div class="tile-img" style="background-image:url('${t.img}')"></div>
                 <div class="tile-body">
                     <div class="tile-title">${t.title}</div>
                     <div class="tile-text">${t.text}</div>
-                    <button class="btn btn-danger" style="margin-top:auto;" onclick="deleteTile(${i})">Verwijderen</button>
+                    <button class="btn btn-danger" style="margin-top:auto; z-index:10;" onclick="event.stopPropagation(); deleteTile(${i})">Verwijderen</button>
                 </div>
             </div>`;
     });
 }
 
-/* --- TABLE LOGIC --- */
+/* --- TABLE --- */
 function addTableRow() {
     const type = document.getElementById('rowType').value;
     const name = document.getElementById('rowName').value;
     if(!name) return alert("Naam is verplicht!");
-    
     const row = { type, name };
     if(type === 'item') {
         row.link = document.getElementById('rowLink').value;
@@ -326,7 +308,6 @@ function addTableRow() {
         row.sub = document.getElementById('subCheck').checked;
     }
     appData.table.push(row);
-    
     document.getElementById('rowName').value = "";
     document.getElementById('rowLink').value = "";
     renderTable();
@@ -334,11 +315,7 @@ function addTableRow() {
 }
 
 function deleteRow(idx) {
-    if(confirm("Regel verwijderen?")) {
-        appData.table.splice(idx, 1);
-        renderTable();
-        saveData();
-    }
+    if(confirm("Regel verwijderen?")) { appData.table.splice(idx, 1); renderTable(); saveData(); }
 }
 
 function moveRow(idx, dir) {
@@ -373,7 +350,7 @@ function renderTable() {
     });
 }
 
-/* --- BACKUP LOGIC --- */
+/* --- BACKUP --- */
 function copyExport() {
     const area = document.getElementById('exportArea');
     area.select();
@@ -396,7 +373,7 @@ function importData() {
 }
 
 function resetToDefault() {
-    if(confirm("Weet je zeker dat je helemaal opnieuw wilt beginnen met de standaard Infofrankrijk data?")) {
+    if(confirm("Weet je zeker dat je wilt resetten?")) {
         appData = JSON.parse(JSON.stringify(defaultData));
         renderTiles();
         renderTable();
@@ -404,9 +381,9 @@ function resetToDefault() {
     }
 }
 
-/* --- GENERATE OUTPUT CODE (HET BELANGRIJKSTE DEEL) --- */
+/* --- CODE GENERATION (FIXED CSS & FOLDS) --- */
 function generateCode() {
-    // 1. GENERATE TILES HTML
+    // 1. Tiles HTML (Fixed Grid)
     let tilesHTML = '<div class="if-grid">';
     appData.tiles.forEach(t => {
         tilesHTML += `
@@ -420,7 +397,7 @@ function generateCode() {
     });
     tilesHTML += '</div>';
 
-    // 2. GENERATE TABLE HTML
+    // 2. Table HTML
     let tableHTML = '';
     appData.table.forEach(r => {
         if(r.type === 'header') {
@@ -436,16 +413,13 @@ function generateCode() {
         }
     });
 
-    // 3. MASTER TEMPLATE
-    // Let op: Dit is de HTML + CSS die op de WordPress pagina komt.
-    // CSS Grid voor tegels, Strakke tabel, 3 Knoppen bovenin.
     const master = `
 <style>
-/* --- CONTAINER & FONTS --- */
-.if-onboard { font-family: 'Segoe UI', Tahoma, sans-serif; max-width: 900px; margin: 0 auto; color: #333; line-height: 1.5; }
+/* --- CONTAINER --- */
+.if-onboard { font-family: 'Segoe UI', sans-serif; max-width: 900px; margin: 0 auto; color: #333; line-height: 1.5; }
 .if-onboard * { box-sizing: border-box; }
 
-/* --- KNOPPEN (3 STUKS) --- */
+/* --- KNOPPEN --- */
 .if-btn-row { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 30px; }
 .if-btn { 
     flex: 1 1 200px; 
@@ -460,21 +434,23 @@ function generateCode() {
     border: 1px solid #800000; 
     cursor: pointer;
     transition: 0.2s;
+    font-family: inherit;
+    display: inline-block;
 }
 .if-btn:hover { background: #600000; transform: translateY(-1px); }
-/* Trigger knop styling (ziet eruit als link, maar is button) */
-button.if-btn { font-family: inherit; appearance: none; -webkit-appearance: none; }
+.if-btn-gray { background: #555; border-color: #555; }
+.if-btn-gray:hover { background: #333; }
 
-/* --- UITKLAP LOGICA (Display none/block voor robuustheid) --- */
-.if-fold-content { display: none; margin-top: 20px; animation: ifFadeIn 0.5s; }
-.if-fold-content.is-open { display: block; }
-@keyframes ifFadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+/* --- FOLD LOGIC (ROBUUSTE VERSIE) --- */
+.if-hidden { display: none !important; }
+.if-visible { display: block !important; animation: ifSlideDown 0.5s ease-out; }
+@keyframes ifSlideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
-/* --- TEGELS (CSS GRID) --- */
+/* --- TEGELS (STRIKTE GRID) --- */
 .if-grid { 
-    display: grid; 
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
-    gap: 20px; 
+    display: grid !important; 
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)) !important; 
+    gap: 20px !important; 
     margin-bottom: 30px; 
 }
 .if-card { 
@@ -485,32 +461,25 @@ button.if-btn { font-family: inherit; appearance: none; -webkit-appearance: none
     box-shadow: 0 4px 6px rgba(0,0,0,0.05); 
     display: flex; 
     flex-direction: column; 
+    height: 100%; /* Forceer gelijke hoogte */
 }
 .if-card-img { 
-    height: 180px; /* Vaste hoogte! */ 
+    height: 180px; 
     background-size: cover; 
     background-position: center; 
     background-color: #f9f9f9;
     border-bottom: 1px solid #eee;
+    flex-shrink: 0;
 }
-.if-card-content { padding: 20px; flex: 1; display: flex; flex-direction: column; }
-.if-card-content h3 { 
-    color: #800000; 
-    margin: 0 0 10px 0; 
-    font-size: 18px; /* Groter font */
-    line-height: 1.3;
-}
-.if-card-content p { 
-    margin: 0; 
-    color: #555; 
-    font-size: 16px; /* Groter font */
-}
+.if-card-content { padding: 20px; flex-grow: 1; display: flex; flex-direction: column; }
+.if-card-content h3 { color: #800000; margin: 0 0 10px 0; font-size: 18px; line-height: 1.3; }
+.if-card-content p { margin: 0; color: #555; font-size: 16px; }
 
 /* --- TABEL --- */
-.if-tbl { width: 100%; border-collapse: collapse; margin-bottom: 30px; border: 1px solid #eee; }
+.if-tbl { width: 100%; border-collapse: collapse; margin-bottom: 30px; border: 1px solid #eee; font-size: 15px; }
 .if-tbl th { background: white; color: #800000; padding: 15px; text-align: center; border-bottom: 3px solid #800000; font-size: 16px; text-transform: uppercase; }
 .if-tbl th.tl { text-align: left; width: 50%; }
-.if-tbl td { padding: 12px 10px; border-bottom: 1px solid #eee; vertical-align: middle; font-size: 15px; }
+.if-tbl td { padding: 12px 10px; border-bottom: 1px solid #eee; vertical-align: middle; }
 .if-th { background: #f2f2f2; color: #800000; font-weight: bold; text-transform: uppercase; font-size: 14px; letter-spacing: 1px; padding: 15px !important; }
 .if-icon { text-align: center; font-size: 18px; }
 .bg-sub { background-color: #fffbfc; }
@@ -518,7 +487,7 @@ button.if-btn { font-family: inherit; appearance: none; -webkit-appearance: none
 .c-no { color: #ccc; }
 .if-link-icon svg { width: 14px; height: 14px; fill: #800000; margin-left: 5px; opacity: 0.6; vertical-align: middle; }
 
-/* Headers */
+/* --- HEADER --- */
 .if-h1 { color: #800000; font-size: 28px; font-weight: 700; margin: 0 0 10px 0; }
 .if-intro { font-size: 18px; color: #555; margin: 0 0 25px 0; }
 </style>
@@ -529,22 +498,22 @@ button.if-btn { font-family: inherit; appearance: none; -webkit-appearance: none
     <p class="if-intro">Voor dit instrument is een Infofrankrijk abonnement vereist.</p>
 
     <div class="if-btn-row">
-        <a href="https://infofrankrijk.tempurl.host/abonnement/" class="if-btn">Meld je aan als abonnee</a>
+        <a href="https://infofrankrijk.tempurl.host/abonnement/" class="if-btn">Word abonnee, meld je aan</a>
         <a href="https://infofrankrijk.tempurl.host/aanmelden" class="if-btn">Log in</a>
-        <button onclick="document.getElementById('if-fold-1').classList.toggle('is-open')" class="if-btn">De voordelen van een abonnement</button>
+        <button onclick="toggleIfId('if-fold-1', this, 'De voordelen van een abonnement', 'Sluit overzicht')" class="if-btn">De voordelen van een abonnement</button>
     </div>
 
-    <div id="if-fold-1" class="if-fold-content">
+    <div id="if-fold-1" class="if-hidden">
         <h2 style="color:#800000; margin-bottom: 20px;">Wat krijg je als abonnee?</h2>
         
         ${tilesHTML}
 
         <div style="text-align:center; padding: 20px 0; border-top: 1px solid #eee;">
-            <button onclick="document.getElementById('if-fold-2').classList.toggle('is-open')" class="if-btn" style="background:#555; border-color:#555;">Bekijk de vergelijkingstabel</button>
+            <button onclick="toggleIfId('if-fold-2', this, 'Bekijk de vergelijkingstabel', 'Verberg tabel')" class="if-btn if-btn-gray" style="max-width:300px;">Bekijk de vergelijkingstabel</button>
         </div>
     </div>
 
-    <div id="if-fold-2" class="if-fold-content">
+    <div id="if-fold-2" class="if-hidden">
         <h2 style="color:#800000; margin-top: 30px;">Gratis vs. Abonnee</h2>
         
         <table class="if-tbl">
@@ -566,11 +535,26 @@ button.if-btn { font-family: inherit; appearance: none; -webkit-appearance: none
         </table>
 
         <div style="text-align:center; margin-top: 30px;">
-            <a href="https://infofrankrijk.tempurl.host/abonnement/" class="if-btn" style="display:block; max-width:400px; margin:0 auto; padding: 15px; font-size: 18px;">JA! Ik word abonnee</a>
+            <a href="https://infofrankrijk.tempurl.host/abonnement/" class="if-btn" style="display:block; max-width:400px; margin:0 auto; padding: 15px; font-size: 18px;">Word abonnee, meld je aan</a>
         </div>
     </div>
 
-</div>`;
+</div>
+
+<script>
+function toggleIfId(id, btn, txtOpen, txtClose) {
+    var el = document.getElementById(id);
+    if (el.classList.contains('if-hidden')) {
+        el.classList.remove('if-hidden');
+        el.classList.add('if-visible');
+        if(btn) btn.innerText = txtClose;
+    } else {
+        el.classList.remove('if-visible');
+        el.classList.add('if-hidden');
+        if(btn) btn.innerText = txtOpen;
+    }
+}
+</script>`;
 
     const out = document.getElementById('finalCode');
     out.value = master;
@@ -579,7 +563,6 @@ button.if-btn { font-family: inherit; appearance: none; -webkit-appearance: none
     alert("Code gekopieerd! Plak dit in je WordPress pagina.");
 }
 
-// Start de boel
 init();
 </script>
 
