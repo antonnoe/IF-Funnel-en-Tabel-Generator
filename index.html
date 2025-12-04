@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Infofrankrijk Funnel Manager v18</title>
+<title>Infofrankrijk Funnel Manager v19</title>
 <style>
     /* --- ADMIN DASHBOARD STYLING --- */
     body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f4f6f8; margin: 0; padding: 20px; color: #333; }
@@ -28,7 +28,13 @@
     .form-group { flex: 1; min-width: 250px; }
     label { display: block; font-weight: bold; margin-bottom: 5px; font-size: 0.85em; color: #666; text-transform: uppercase; }
     input[type="text"], textarea, select { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 1em; }
-    textarea { height: 80px; resize: vertical; }
+    textarea { height: 120px; resize: vertical; font-family: 'Segoe UI', sans-serif; }
+
+    /* Editor Toolbar */
+    .editor-toolbar { background: #e9ecef; padding: 5px; border: 1px solid #ccc; border-bottom: none; border-radius: 4px 4px 0 0; display: flex; gap: 5px; }
+    .editor-btn { background: white; border: 1px solid #ccc; padding: 2px 8px; cursor: pointer; font-weight: bold; font-size: 0.9em; border-radius: 3px; }
+    .editor-btn:hover { background: #ddd; }
+    #tileText { border-radius: 0 0 4px 4px; margin-top:0; }
 
     /* Buttons */
     .btn { padding: 10px 18px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; transition: 0.2s; font-size: 0.95em; display: inline-flex; align-items: center; justify-content: center; gap: 5px; text-decoration: none; }
@@ -43,7 +49,6 @@
     .btn-keep { background: #f1c40f; color: #333; border: 1px solid #d4ac0d; width: 100%; padding: 15px; margin-bottom: 20px; font-size: 1.1em;}
     .btn-keep:hover { background: #f39c12; }
 
-    /* Speciale KASSA knoppen */
     .output-options { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-bottom: 20px; }
     .btn-opt { padding: 20px; font-size: 1.1em; border: 2px solid transparent; color: white; }
     .btn-opt:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
@@ -61,14 +66,14 @@
     @keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 0; opacity: 0;} }
 
     /* Admin Previews */
-    .tile-grid-preview { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 15px; } /* Admin preview ook breder */
+    .tile-grid-preview { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 15px; }
     .tile-card { background: white; border: 1px solid #ddd; border-radius: 6px; overflow: hidden; display: flex; flex-direction: column; position: relative; }
     .tile-card:hover { border-color: #800000; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
     .edit-hint { position: absolute; top: 5px; right: 5px; background: rgba(255,255,255,0.9); padding: 2px 6px; font-size: 0.7em; border-radius: 3px; border: 1px solid #ccc; pointer-events: none; color: #333;}
     .tile-img { height: 160px; background-color: #eee; background-size: cover; background-position: top center; border-bottom: 1px solid #eee; }
     .tile-body { padding: 15px; flex: 1; display: flex; flex-direction: column; background: rgba(128, 0, 0, 0.04); }
     .tile-title { font-weight: bold; color: #800000; margin-bottom: 5px; font-size: 1.1em; }
-    .tile-text { font-size: 0.95em; color: #555; flex: 1; margin-bottom: 15px; line-height: 1.4; }
+    .tile-text { font-size: 0.95em; color: #555; flex: 1; margin-bottom: 15px; line-height: 1.4; white-space: pre-line; }
 
     .table-preview { width: 100%; border-collapse: collapse; background: white; font-size: 0.9em; }
     .table-preview th { text-align: left; background: #f1f5f9; padding: 12px; border-bottom: 2px solid #e2e8f0; color: #475569; }
@@ -86,7 +91,7 @@
 <div class="container">
     <header>
         <h1>Infofrankrijk Funnel Manager</h1>
-        <div class="version">v18 Divi-Safe</div>
+        <div class="version">v19 Editor Edition</div>
     </header>
 
     <div class="tabs">
@@ -99,7 +104,7 @@
     <div id="tab-backup" class="tab-content active">
         <div style="background: #e3f2fd; color: #0d47a1; padding: 15px; border-left: 5px solid #2196f3; margin-bottom: 25px;">
             <strong>Instructie:</strong><br>
-            Je hebt maar <strong>één Keep notitie</strong> nodig voor alles. De keuze wat je wilt publiceren (alleen tabel, alleen tegels of alles) maak je pas bij Tabblad 4.
+            Je hebt maar <strong>één Keep notitie</strong> nodig voor alles.
         </div>
 
         <div class="backup-container">
@@ -129,7 +134,6 @@
     <div id="tab-tiles" class="tab-content">
         <div class="panel">
             <h3>Tegel Bewerken / Toevoegen</h3>
-            <p style="font-size:0.9em; color:#666; margin-top:-5px;">Klik op een bestaande tegel om hem aan te passen.</p>
             <div class="form-row">
                 <div class="form-group">
                     <label>Titel</label>
@@ -141,8 +145,13 @@
                 </div>
             </div>
             <div class="form-group">
-                <label>Korte Tekst (Wervend)</label>
-                <textarea id="tileText" placeholder="Beschrijf in 1 zin wat de bezoeker aan deze tool heeft..."></textarea>
+                <label>Tekst (Wervend)</label>
+                <div class="editor-toolbar">
+                    <button class="editor-btn" onclick="formatText('bold')" title="Dikgedrukt">B</button>
+                    <button class="editor-btn" onclick="formatText('italic')" title="Schuingedrukt">I</button>
+                    <button class="editor-btn" onclick="formatText('list')" title="Opsomming">• Lijst</button>
+                </div>
+                <textarea id="tileText" placeholder="Beschrijf de tool... Gebruik Enter voor nieuwe regels."></textarea>
             </div>
             <button class="btn btn-primary" onclick="addTile()">+ Opslaan / Toevoegen</button>
         </div>
@@ -206,7 +215,7 @@
                 </button>
             </div>
 
-            <p style="color:#666; margin-bottom: 10px; font-style:italic;">De code bevat nu de "Infofrankrijk-blush" achtergrond en 2 kolommen op laptop.</p>
+            <p style="color:#666; margin-bottom: 10px; font-style:italic;">Enters worden nu correct omgezet naar witregels.</p>
         </div>
         <textarea id="finalCode" style="width:100%; height:300px; margin-top:10px; border:1px solid #ddd; padding:15px; font-family:monospace; color:#555;" readonly onclick="this.select()"></textarea>
     </div>
@@ -218,27 +227,12 @@
 /* DATA STORE */
 const defaultData = {
     tiles: [
-        { title: "Overheden in de buurt", img: "https://infofrankrijk.com/wp-content/uploads/2024/02/overheden-kaart.png", text: "Voer je postcode in en krijg direct een helder overzicht van de contactgegevens van alle overheden en instellingen." },
-        { title: "Plus Value Calculator", img: "https://infofrankrijk.com/wp-content/uploads/2024/02/plus-value.png", text: "Voer de basisgegevens in en je krijgt een gedetailleerde doorrekening van de plus value belasting die je zou betalen bij verkoop." },
-        { title: "Bruto-Netto Calculator", img: "https://infofrankrijk.com/wp-content/uploads/2024/02/bruto-netto.png", text: "Bereken je netto inkomen aan de hand van duidelijke parameters en een volledig overzicht van alle inkomstenbronnen." },
-        { title: "Beroepenchecker", img: "https://infofrankrijk.com/wp-content/uploads/2024/02/beroepen.png", text: "Een duidelijk overzicht van beroepseisen: wordt jouw Nederlandse diploma in Frankrijk erkend?" }
+        { title: "Hier vind je overheden in de buurt", img: "https://infofrankrijk.com/wp-content/uploads/2024/02/overheden-kaart.png", text: "Voer je postcode in en krijg direct een helder overzicht van de contactgegevens van alle overheden en instellingen." },
+        { title: "Plus Value Calculator", img: "https://infofrankrijk.com/wp-content/uploads/2024/02/plus-value.png", text: "Voer de basisgegevens in en je krijgt een gedetailleerde doorrekening van de plus value belasting die je zou betalen bij verkoop." }
     ],
     table: [
         {type: "header", name: "Algemeen"},
-        {type: "item", name: "Infofrankrijk; de basis (vele artikelen)", vis: true, sub: true},
-        {type: "item", name: "Dagelijkse nieuwsbrief (gerenoveerd in 2026!)", link: "https://infofrankrijk.tempurl.host/nieuwsbrief/", vis: true, sub: true},
-        {type: "item", name: "Het forum van Nederlanders.fr blijft gratis", vis: true, sub: true},
-        {type: "header", name: "DOSSIERS"},
-        {type: "item", name: "Ondernemen in Frankrijk", vis: true, sub: true},
-        {type: "item", name: "Vastgoedbezit in Frankrijk", vis: true, sub: true},
-        {type: "item", name: "85 PDF bestanden uit 'Klussen in Frankrijk'", link: "https://infofrankrijk.tempurl.host/2025/08/26/klussen/", vis: true, sub: true},
-        {type: "header", name: "SIMULATIE- EN REKENMODULES"},
-        {type: "item", name: "Periodieke nieuwsbrief met updates en nieuwe tools in 2026", vis: false, sub: true},
-        {type: "item", name: "Zorgkompas Frankrijk: simulator", link: "https://infofrankrijk.tempurl.host/2025/11/21/zorgkompas/", vis: false, sub: true},
-        {type: "item", name: "Database onroerend goed zoeken", vis: false, sub: true},
-        {type: "item", name: "Bruto-Netto simulator NL <> FR", link: "https://infofrankrijk.tempurl.host/2025/11/10/financieel/", vis: false, sub: true},
-        {type: "item", name: "Simulatiemodule Energieverbruik", link: "https://infofrankrijk.tempurl.host/2025/09/22/energie/", vis: false, sub: true},
-        {type: "item", name: "Beroepenchecker", link: "https://infofrankrijk.tempurl.host/2025/11/20/werken/", vis: false, sub: true}
+        {type: "item", name: "Infofrankrijk; de basis", vis: true, sub: true}
     ]
 };
 
@@ -246,7 +240,7 @@ let appData = JSON.parse(JSON.stringify(defaultData));
 
 /* INIT & TABS */
 function init() {
-    const saved = localStorage.getItem('if_v18_data');
+    const saved = localStorage.getItem('if_v19_data');
     if(saved) appData = JSON.parse(saved);
     renderTiles();
     renderTable();
@@ -268,8 +262,26 @@ function showToast(msg, type="success") {
 }
 
 function saveData() {
-    localStorage.setItem('if_v18_data', JSON.stringify(appData));
+    localStorage.setItem('if_v19_data', JSON.stringify(appData));
     updateExportArea();
+}
+
+/* FORMAT TEXT HELPER */
+function formatText(command) {
+    const textarea = document.getElementById('tileText');
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const text = textarea.value;
+    const selected = text.substring(start, end);
+    let replacement = "";
+
+    if (command === 'bold') replacement = `<b>${selected}</b>`;
+    if (command === 'italic') replacement = `<i>${selected}</i>`;
+    if (command === 'list') replacement = `\n• ${selected}`;
+
+    textarea.value = text.substring(0, start) + replacement + text.substring(end);
+    textarea.focus();
+    textarea.selectionEnd = start + replacement.length;
 }
 
 /* TILES LOGIC */
@@ -322,13 +334,15 @@ function renderTiles() {
     const list = document.getElementById('tileList');
     list.innerHTML = "";
     appData.tiles.forEach((t, i) => {
+        // Voor preview in admin gebruiken we ook een simpele replace voor enters
+        const previewText = t.text.replace(/\n/g, '<br>');
         list.innerHTML += `
             <div class="tile-card" onclick="loadTileToEdit(${i})" style="cursor:pointer;" title="Klik om te bewerken">
                 <div class="edit-hint">✎ Klik om te bewerken</div>
                 <div class="tile-img" style="background-image:url('${t.img}')"></div>
                 <div class="tile-body">
                     <div class="tile-title">${t.title}</div>
-                    <div class="tile-text">${t.text}</div>
+                    <div class="tile-text">${previewText}</div>
                     <button class="btn btn-danger" style="margin-top:auto; z-index:10;" onclick="event.stopPropagation(); deleteTile(${i})">Verwijderen</button>
                 </div>
             </div>`;
@@ -403,22 +417,25 @@ function importData() {
 function resetToDefault() { if(confirm("Resetten naar standaard?")) { appData = JSON.parse(JSON.stringify(defaultData)); renderTiles(); renderTable(); saveData(); showToast("🔄 Reset voltooid"); } }
 
 /* =========================================================
-   DE GENERATOR ENGINE (V18 - Fixed Layout & Blush)
+   DE GENERATOR ENGINE (V19 - Met Return/Bold Support)
    ========================================================= */
 function generateCode(mode) {
     
-    // 1. TILES GENERATION (Met interne 'Lees meer')
+    // 1. TILES GENERATION 
     let tilesHTML = '';
     if(mode === 'all' || mode === 'tiles') {
         tilesHTML = '<div class="if-grid">';
         appData.tiles.forEach((t, index) => {
+            // HIER GEBEURT DE MAGIE: vervang \n door <br>
+            const processedText = t.text.replace(/\n/g, '<br>');
+            
             tilesHTML += `
             <div class="if-card">
                 <div class="if-card-img" style="background-image:url('${t.img}')"></div>
                 <div class="if-card-content">
                     <h3>${t.title}</h3>
                     <div class="if-text-wrap" id="if-tw-${index}">
-                        <p>${t.text}</p>
+                        <p>${processedText}</p>
                     </div>
                     <a class="if-read-more" onclick="document.getElementById('if-tw-${index}').classList.add('open'); this.style.display='none';">Lees meer...</a>
                 </div>
@@ -445,7 +462,7 @@ function generateCode(mode) {
         }
     }
 
-    // 3. MASTER CSS (Updated: 2 cols on laptop, Blush bg, Read more logic)
+    // 3. MASTER CSS
     let css = `<style>.if-onboard{font-family:'Segoe UI',Tahoma,sans-serif;max-width:900px;margin:0 auto;color:#333;line-height:1.5}.if-onboard *{box-sizing:border-box}.if-btn-row{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:30px}.if-btn{flex:1 1 200px;text-align:center;padding:12px 15px;background:#800000;color:white!important;text-decoration:none;border-radius:4px;font-weight:600;font-size:16px;border:1px solid #800000;cursor:pointer;transition:0.2s;font-family:inherit;display:inline-block}.if-btn:hover{background:#600000;transform:translateY(-1px)}.if-btn-gray{background:#555;border-color:#555}.if-btn-gray:hover{background:#333}.if-hidden{display:none!important}.if-visible{display:block!important;animation:ifSlideDown 0.5s ease-out}@keyframes ifSlideDown{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}.if-grid{display:grid!important;grid-template-columns:repeat(auto-fit,minmax(45%,1fr))!important;gap:20px!important;margin-bottom:30px}@media(max-width:650px){.if-grid{grid-template-columns:1fr!important}}.if-card{border:1px solid #eee;border-radius:8px;overflow:hidden;background:white;box-shadow:0 4px 6px rgba(0,0,0,0.05);display:flex;flex-direction:column;height:100%}.if-card-img{height:180px;background-size:cover;background-position:top center;background-color:#f9f9f9;border-bottom:1px solid #eee;flex-shrink:0}.if-card-content{padding:20px;flex-grow:1;display:flex;flex-direction:column;background:rgba(128,0,0,0.04)}.if-card-content h3{color:#800000;margin:0 0 10px 0;font-size:1.1em;line-height:1.3;font-weight:700}.if-text-wrap{max-height:4.5em;overflow:hidden;transition:max-height 0.3s}.if-text-wrap.open{max-height:500px}.if-text-wrap p{margin:0;color:#555;font-size:0.95em}.if-read-more{color:#800000;font-size:0.85em;text-decoration:underline;cursor:pointer;margin-top:5px;display:inline-block}.if-tbl{width:100%;border-collapse:collapse;margin-bottom:30px;border:1px solid #eee;font-size:15px}.if-tbl th{background:white;color:#800000;padding:15px;text-align:center;border-bottom:3px solid #800000;font-size:16px;text-transform:uppercase}.if-tbl th.tl{text-align:left;width:50%}.if-tbl td{padding:12px 10px;border-bottom:1px solid #eee;vertical-align:middle}.if-th{background:#f2f2f2;color:#800000;font-weight:bold;text-transform:uppercase;font-size:14px;letter-spacing:1px;padding:15px!important}.if-icon{text-align:center;font-size:18px}.bg-sub{background-color:#fffbfc}.c-yes{color:#27ae60;font-weight:bold}.c-no{color:#ccc}.if-link-icon svg{width:14px;height:14px;fill:#800000;margin-left:5px;opacity:0.6;vertical-align:middle}.if-h1{color:#800000;font-size:28px;font-weight:700;margin:0 0 10px 0}.if-intro{font-size:18px;color:#555;margin:0 0 25px 0}</style>`;
     
     // 4. OUTPUT HTML
