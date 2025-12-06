@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Infofrankrijk Funnel Manager v20</title>
+<title>Infofrankrijk Funnel Manager v21</title>
 <style>
     /* --- ADMIN DASHBOARD STYLING --- */
     body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f4f6f8; margin: 0; padding: 20px; color: #333; }
@@ -46,8 +46,9 @@
     .btn-danger:hover { background: #fecaca; }
     .btn-action { background: #e2e8f0; color: #4a5568; padding: 6px 10px; }
     .btn-action:hover { background: #cbd5e0; }
-    .btn-keep { background: #f1c40f; color: #333; border: 1px solid #d4ac0d; width: 100%; padding: 15px; margin-bottom: 20px; font-size: 1.1em;}
-    .btn-keep:hover { background: #f39c12; }
+    
+    .btn-keep { background: #fff; color: #333; border: 2px solid #f1c40f; width: 100%; padding: 15px; margin-bottom: 20px; font-size: 1.1em; transition:0.2s;}
+    .btn-keep:hover { background: #fff9c4; border-color: #f39c12; transform: translateY(-1px); box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
 
     .output-options { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-bottom: 20px; }
     .btn-opt { padding: 20px; font-size: 1.1em; border: 2px solid transparent; color: white; }
@@ -82,8 +83,22 @@
     .check-yes { color: #27ae60; font-weight: bold; }
     .check-no { color: #cbd5e0; }
 
+    /* Backup Area Styles */
     .backup-container { background: #2d3748; padding: 25px; border-radius: 6px; color: white; }
     .backup-textarea { width: 100%; height: 100px; background: #1a202c; color: #a0aec0; border: 1px solid #4a5568; padding: 10px; font-family: monospace; border-radius: 4px; box-sizing: border-box; margin: 5px 0; }
+    
+    .fail-safe-box {
+        background: #fff3cd; 
+        color: #856404; 
+        border: 2px solid #ffeeba; 
+        padding: 15px; 
+        border-radius: 6px; 
+        margin-bottom: 25px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+    .fail-safe-icon { font-size: 2em; }
 </style>
 </head>
 <body>
@@ -91,7 +106,7 @@
 <div class="container">
     <header>
         <h1>Infofrankrijk Funnel Manager</h1>
-        <div class="version">v20 Scroll & Action</div>
+        <div class="version">v21 Fail-Safe</div>
     </header>
 
     <div class="tabs">
@@ -102,9 +117,14 @@
     </div>
 
     <div id="tab-backup" class="tab-content active">
-        <div style="background: #e3f2fd; color: #0d47a1; padding: 15px; border-left: 5px solid #2196f3; margin-bottom: 25px;">
-            <strong>Instructie:</strong><br>
-            Je hebt maar <strong>één Keep notitie</strong> nodig voor alles.
+        
+        <div class="fail-safe-box">
+            <div class="fail-safe-icon">⚠️</div>
+            <div>
+                <strong>BELANGRIJK VOOR BEHEERDERS:</strong><br>
+                Heb je wijzigingen gedaan? Sla ze <strong>ALTIJD</strong> op in Google Keep.<br>
+                Als je dit venster sluit zonder op te slaan in Keep, is je werk weg.
+            </div>
         </div>
 
         <div class="backup-container">
@@ -114,19 +134,21 @@
 
             <div style="display:flex; gap: 20px; flex-wrap: wrap;">
                 <div style="flex:1;">
-                    <label style="color:#a0aec0;">2. Huidige Data (Kopiëren na bewerken):</label>
+                    <label style="color:#f1c40f; font-weight:bold;">2. KLAAR? OPSLAAN!</label>
+                    <p style="font-size:0.8em; margin-top:0; color:#ccc;">Kopieer dit blok en plak het in Keep (overschrijf de oude).</p>
                     <textarea id="exportArea" class="backup-textarea" readonly onclick="this.select()"></textarea>
                     <button class="btn btn-primary" onclick="copyExport()">Kopieer naar klembord</button>
                 </div>
                 <div style="flex:1;">
-                    <label style="color:#a0aec0;">3. Data Herstellen (Plakken om te starten):</label>
+                    <label style="color:#27ae60; font-weight:bold;">3. BEGINNEN? INLADEN!</label>
+                    <p style="font-size:0.8em; margin-top:0; color:#ccc;">Plak hier de code uit Keep om verder te werken.</p>
                     <textarea id="importArea" class="backup-textarea" placeholder="Plak hier je JSON code..."></textarea>
                     <button class="btn btn-primary" style="background:#f39c12;" onclick="importData()">Data Inladen</button>
                 </div>
             </div>
             
             <div style="margin-top: 30px; text-align:right; border-top: 1px solid #4a5568; padding-top: 15px;">
-                <button class="btn btn-danger" onclick="resetToDefault()">Reset naar Fabrieksinstellingen</button>
+                <button class="btn btn-danger" onclick="resetToDefault()">Noodgeval: Reset naar 'Gouden Master'</button>
             </div>
         </div>
     </div>
@@ -215,7 +237,7 @@
                 </button>
             </div>
 
-            <p style="color:#666; margin-bottom: 10px; font-style:italic;">Nu met vaste hoogte, scrollbar en actieknoppen in elke tegel.</p>
+            <p style="color:#666; margin-bottom: 10px; font-style:italic;">Enters worden nu correct omgezet naar witregels.</p>
         </div>
         <textarea id="finalCode" style="width:100%; height:300px; margin-top:10px; border:1px solid #ddd; padding:15px; font-family:monospace; color:#555;" readonly onclick="this.select()"></textarea>
     </div>
@@ -224,22 +246,16 @@
 <div id="toast">Melding</div>
 
 <script>
-/* DATA STORE */
-const defaultData = {
-    tiles: [
-        { title: "Voorbeeld Tool", img: "https://via.placeholder.com/600x300", text: "Dit is een voorbeeld tekst. De tekst kan nu lekker lang zijn want er komt automatisch een scrollbar als het niet past." }
-    ],
-    table: [
-        {type: "header", name: "Algemeen"},
-        {type: "item", name: "Infofrankrijk; de basis", vis: true, sub: true}
-    ]
-};
+/* ======================================================
+   FAIL-SAFE DEFAULT DATA (De 'Gouden Master' uit Keep)
+   ====================================================== */
+const defaultData = {"tiles":[{"title":"Beroepseisen checker","img":"https://infofrankrijk.tempurl.host/wp-content/uploads/2025/12/beroepengids-scaled.png","text":"We hebben inmiddels meer dan 60 beroepen en ondernemersactiviteiten in dit handige overzicht geplaatst. In één enkel instrument vind je: \n\n• alle beroepseisen, \n\n• benodigde diploma's, \n\n• bij welke \"Chambre\" aanmelden \n\n• zelfs een prognose van inkomstenpotentieel. \n\nDe basis is een dynamische koppeling met de Franse overheid waardoor deze tool altijd up to date is. In 2026 zullen we de checker uitbreiden met meer beroepen en sectoren voor ondernemers. "},{"title":"Contrôle Technique | APK","img":"https://infofrankrijk.tempurl.host/wp-content/uploads/2025/12/apk-keuring-poctcoe-scaled.png","text":"<b>Voer je postcode in Frankrijk in en:</b>\n\n• Zie direct waar je de Contrôle Technique uit kunt laten voeren. \n• Met een prijsvergelijker. \n\nVanaf 2026 voegen we actuele benzineprijs- en tankstationdata toe aan deze bestaande APK-keuringsstations-tool, zodat u met één klik het goedkoopste station in uw departement kunt vinden."},{"title":"Kosten van de vastgoedtransactie","img":"https://infofrankrijk.tempurl.host/wp-content/uploads/2025/12/transactiekosten-vastgoed.png","text":"<b>Deze slimme simulator berekent de totale kosten van een vastgoedtransactie:</b>\n\n• de notariskosten, \n• de eventuele makelaarskosten\nen de facultative kosten zoals:\n\n• de mainlevée d'hypothèque, \n• SPANC-assainissement, \n• de géomètre \n• en de hypotheekgarantie (caution). \n\nDeze totale kosten voor zowel de verkoper als de koper <b>kunnen</b> fors oplopen. Zeker als het een tweede woning is en het huis wordt binnen - zeg - tien jaar weer verkocht. "},{"title":"Calculator voor energiekosten","img":"https://infofrankrijk.tempurl.host/wp-content/uploads/2025/12/energiecalculator-scaled.png","text":"Praktische scenariocalculator met geïntegreerde berekeningen voor isolatie, ventilatie, verwarmingssystemen,\nzonnepanelen, zwembad en Franse klimaatzones.\n\n<b>Unieke waardepropositie</b>\n\n• Combineert fysisch onderbouwde transmissie- en ventilatieverliezen met rendementsscenario’s (SCOP/COP), bijverwarming en zwembadgebruik. \n• Energietarieven zijn volledig door u instelbaar – geen theoretische aannames, maar praktische vergelijkingen in kWh en kosten.\n• Live-feeds & bronintegriteit.\n\n<b>Rekendefaults updaten periodiek via open-data-synchronisatie:</b>\n\n• Zonne-instraling per Franse klimaatzone, realistische SCOP-ranges voor gangbare warmtepompsystemen en zwembadseizoen- & verliesparameters (incl. afdekking en windfactoren), gebaseerd op publieke normlogica zoals EN-ISO-warmteoverdracht en graaddagen-principes.\n• Vergelijk hoofd- vs. bijverwarming op jaarbasis (kWh / L / kg / €), incl. COP-dip bij vorst.\n• Automatische PV-verrekening met 70% eigen verbruik als transparant startpunt.\n• Zwembadscenario’s met afdekking- & windfactoren (WP, gas of elektra).\n• Hoge nauwkeurigheid met echte invoer: U-waarden, ACH, volume, SCOP, energietarieven.\n\nDoelgroep: woningeigenaren in Frankrijk die installaties, renovatieprioriteit en terugverdientijd nuchter willen doorrekenen vóór offertes en systeemkeuzes."},{"title":"Plus Value Calculator","img":"https://infofrankrijk.tempurl.host/wp-content/uploads/2025/12/plusvalue-calculator.png","text":"Bereken Franse vastgoedwinstbelasting (Plus-Value Immobilière) snel en exact.\nInclusief afschrijvingsvoordeel, forfait-opties en uitsplitsing per jaartal.\n\n<b>Direct PDF-export voor uw dossier.</b>"},{"title":"Klus- en forum-archief","img":"https://infofrankrijk.tempurl.host/wp-content/uploads/2025/12/klussen-in-frankrijk.png","text":"<b>Het hele klusforum van Infofrankrijk in één scherm? </b>\nJa hoor, het kan wel. Meer dan 12 jaar aan zeer uitgebreide en deskundige bijdragen van de forumdeelnemers van Infofrankrijk worden hier inzichtelijk gemaakt. \n\nDeze module is trouwens <b>gratis</b>, ook als je geen abonnee bent kun je hier gebruik van maken. \n\nVerder gaan we in 2026 de inhoud van de rubriek <b>\"Klussen in Frankrijk\"</b> nog completer maken en zoveel mogelijk in haar oude fantastische staat herstellen.   "},{"title":"Internet vindmodule","img":"https://infofrankrijk.tempurl.host/wp-content/uploads/2025/12/internetfinder-scaled.png","text":"<b>Korte, beschrijving van de tool:</b>\n\n• Dit is een interactieve adres-checker die in twee stappen toont of glasvezel of DSL op uw locatie beschikbaar is.\n• Directe doorlinks naar de belangrijkste Franse glasvezel-providers en aanvullende diensten voor Orange Fibre, SFR Fibre, Bouygues Fibre en Free Fibre.\n• Praktische extra tips (linkjes) voor Nederlandse NLZIET, Canal Digitaal, en VPN-bescherming via NordVPN en Surfshark.\n"},{"title":"Bruto naar netto in FR | BE | NL","img":"https://infofrankrijk.tempurl.host/wp-content/uploads/2025/12/bruto-netto-calculator-scaled.png","text":"<b>Inkomensanalyse: bruto/netto simulator.</b>\n\nVergelijk je netto-inkomsten in Frankrijk met Nederland of België.\n\nHet Franse belastingsysteem verschilt in menig opzicht van wat u gewend bent. Deze vergelijkingstool biedt een eerste oriëntatie op uw netto inkomen na emigratie.\n\n<b>Wat levert het op?</b>\n\n• De tool berekent een globale indicatie van uw netto inkomen in Frankrijk versus uw thuisland. U krijgt inzicht in de belangrijkste verschillen: sociale premies, belastingschijven en het Franse gezinsquotiënt.\n• Dit is geen exacte berekening maar een degelijke basis voor verdere planning. Met deze eerste inschatting kunt u gerichter in gesprek met uw accountant of belastingadviseur.\n\n<b>Voor wie?</b>\nNederlanders en Belgen die overwegen in Frankrijk te gaan werken of ondernemen. De tool houdt rekening met gezinssituatie en geeft een realistisch beeld van de financiële consequenties van emigratie."},{"title":"Nieuwsbrief en videocalls","img":"https://infofrankrijk.tempurl.host/wp-content/uploads/2025/12/nieuwsbrief.png","text":"<b>Ben je abonnee? </b>\n\n• Dan krijg je automatisch onze nieuwsbrief met updates en aankondigingen van nieuwe tools. \n• Iedere 2 à 3 maanden brengen we je op de hoogte van de laatste ontwikkelingen. \n• Neem deel aan de videoconferenties om je wensen kenbaar te maken. "},{"title":"Handige assistent Franse taal","img":"https://infofrankrijk.tempurl.host/wp-content/uploads/2025/12/taalassistent-scaled.png","text":"<b>DIT IS GEEN CURSUS!</b>\n\nHet is een <b>VERTALER/TOLK</b> die je altijd bij je hebt. Een tool waarmee je per situatie (scenario) een vocabulaire en voorbeeldzinnen krijgt aangereikt die je helpen om de juiste dingen te zeggen. En, we hebben deze tool zo gemaakt dat je deze makkelijk op je telefoon kunt zetten. \n\n<b>Op dit moment zijn er 14 hoofdscenario's:</b>\n\n1. <b>SHOPPING</b>: met meer dan 10 WINKELSOORTEN van 'Boucherie' tot 'Traiteur'\n2. <b>TELEFOON</b>: 9 situaties zoals bellen, opnemen, nummer (ook je eigen nummer) uitspreken enz.\n3. <b>FINANCIEEL</b>: bank & betalen, rekening openen, RIB, incasso’s, limieten, kaart/contactloos enz. \n4. <b>HUISHOUDEN</b>: van ongediertebestrijding tot zwembad, bedenk het maar...\n5. <b>LA MAIRIE</b>: met 4 situaties die je daar kunt tegenkomen\n6. <b>GEZONDHEIDSZORG</b>: van huisarts tot apotheek \n\n...  en zo verder tot <b>14</b> hoofdscenario's en - per scenario- een veelvoud aan de vocabulaire en voorbeeldzinnen die handig van pas kunnen komen. En natuurlijk gaan we de taalassistent verder uitbouwen in 2026, kom maar op met je wensen en ideeën!"},{"title":"Officiële instellingen / postcode (75005)","img":"https://infofrankrijk.tempurl.host/wp-content/uploads/2025/12/dasboard-admin.png","text":"<b>Vind direct lokale Franse overheidsdiensten. </b>\n\n• VOER JE FRANSE POSTCODE IN.\n• CONTACTGEVENS VAN DE MEESTE ADMINISTRATIEVE DIENSTEN:\n\n<i>[ CAF - CPAM - PRÉFECTUUR - MAIRIE - URRSAF - DGFIP - DDT/DDTM - POLICE/COMMISSARIAT - GENDARMERIE - HÔPITAL - PÔLE EMPLOI - TRÉSORERIE - FRANCE SERVICE ]</i>\n\n<b>Bij jou in de buurt natuurlijk !</b>"}],"table":[{"type":"header","name":"Algemeen"},{"type":"item","name":"Infofrankrijk; de basis (vele artikelen)","vis":true,"sub":true},{"type":"item","name":"Dagelijkse nieuwsbrief (gerenoveerd in 2026!)","link":"https://infofrankrijk.tempurl.host/nieuwsbrief/","vis":true,"sub":true},{"type":"item","name":"Het forum van Nederlanders.fr blijft gratis","vis":true,"sub":true},{"type":"header","name":"DOSSIERS"},{"type":"item","name":"Ondernemen in Frankrijk","vis":true,"sub":true},{"type":"item","name":"Vastgoedbezit in Frankrijk","vis":true,"sub":true},{"type":"item","name":"85 PDF bestanden uit 'Klussen in Frankrijk'","link":"https://infofrankrijk.tempurl.host/2025/08/26/klussen/","vis":true,"sub":true},{"type":"item","name":"De gratis Klussen in Frankrijk Module","link":"https://infofrankrijk.tempurl.host/2025/11/30/uit-het-klusforum-van-infofrankrijk-com/","vis":true,"sub":true},{"type":"header","name":"Bij u in de buurt"},{"type":"item","name":"Internet beschikbaarheid","link":"https://infofrankrijk.tempurl.host/2025/11/12/internet/","vis":true,"sub":true},{"type":"item","name":"Overheden en instellingen","link":"https://infofrankrijk.tempurl.host/2025/11/14/overheden/","vis":true,"sub":true},{"type":"item","name":"Contrôle Technique | APK - Postcode","link":"https://infofrankrijk.tempurl.host/2025/11/26/de-controle-technique-de-franse-apk/","vis":true,"sub":true},{"type":"item","name":"Internet bij jouw huis in Frankrijk","link":"https://infofrankrijk.tempurl.host/2025/11/12/internetverbinding-in-frankrijk/","vis":true,"sub":true},{"type":"header","name":"SIMULATIE- EN REKENMODULES"},{"type":"item","name":"Periodieke nieuwsbrief & nieuwe tools","vis":false,"sub":true},{"type":"item","name":"Zorgkompas Frankrijk: simulator","link":"https://infofrankrijk.tempurl.host/2025/11/21/zorgkompas/","vis":false,"sub":true},{"type":"item","name":"Database onroerend goed zoeken","vis":false,"sub":true},{"type":"item","name":"Bruto-Netto simulator NL <> FR","link":"https://infofrankrijk.tempurl.host/2025/11/10/financieel/","vis":false,"sub":true},{"type":"item","name":"Simulatiemodule Energieverbruik","link":"https://infofrankrijk.tempurl.host/2025/09/22/energie/","vis":false,"sub":true},{"type":"item","name":"Beroepenchecker","link":"https://infofrankrijk.tempurl.host/2025/11/20/werken/","vis":false,"sub":true},{"type":"item","name":"Plus-Value-Calculator","link":"https://infofrankrijk.tempurl.host/2025/11/08/plus-value-calculator/","vis":false,"sub":true}]};
 
 let appData = JSON.parse(JSON.stringify(defaultData));
 
 /* INIT & TABS */
 function init() {
-    const saved = localStorage.getItem('if_v20_data');
+    const saved = localStorage.getItem('if_v21_data');
     if(saved) appData = JSON.parse(saved);
     renderTiles();
     renderTable();
@@ -261,7 +277,7 @@ function showToast(msg, type="success") {
 }
 
 function saveData() {
-    localStorage.setItem('if_v20_data', JSON.stringify(appData));
+    localStorage.setItem('if_v21_data', JSON.stringify(appData));
     updateExportArea();
 }
 
