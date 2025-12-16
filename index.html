@@ -3,16 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Infofrankrijk Funnel Manager v26 FINAL</title>
+<title>Infofrankrijk Funnel Manager v26 (Hersteld)</title>
 <style>
-    /* --- ADMIN DASHBOARD STYLING --- */
+    /* --- STYLING --- */
     body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f4f6f8; margin: 0; padding: 20px; color: #333; }
     .container { max-width: 1200px; margin: 0 auto; background: white; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); overflow: hidden; min-height: 80vh; }
-    
     header { background: #800000; color: white; padding: 20px 30px; display: flex; justify-content: space-between; align-items: center; }
     h1 { margin: 0; font-size: 1.4em; }
     .version { font-size: 0.8em; opacity: 0.8; background: rgba(255,255,255,0.2); padding: 2px 8px; border-radius: 4px; }
-
+    
     /* Tabs */
     .tabs { display: flex; background: #eee; border-bottom: 1px solid #ddd; }
     .tab { padding: 15px 20px; cursor: pointer; font-weight: bold; border: none; background: none; color: #555; outline: none; transition: 0.2s; border-right: 1px solid #ddd;}
@@ -22,34 +21,22 @@
     .tab-content.active { display: block; animation: fadeIn 0.3s; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* Forms */
+    /* Inputs & Buttons */
     .panel { background: #f8f9fa; border: 1px solid #e9ecef; padding: 20px; border-radius: 6px; margin-bottom: 20px; }
     .form-row { display: flex; gap: 15px; margin-bottom: 15px; flex-wrap: wrap;}
     .form-group { flex: 1; min-width: 250px; }
     label { display: block; font-weight: bold; margin-bottom: 5px; font-size: 0.85em; color: #666; text-transform: uppercase; }
     input[type="text"], textarea, select { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 1em; }
     textarea { height: 120px; resize: vertical; font-family: 'Segoe UI', sans-serif; }
-
-    /* Editor Toolbar */
-    .editor-toolbar { background: #e9ecef; padding: 5px; border: 1px solid #ccc; border-bottom: none; border-radius: 4px 4px 0 0; display: flex; gap: 5px; }
-    .editor-btn { background: white; border: 1px solid #ccc; padding: 2px 8px; cursor: pointer; font-weight: bold; font-size: 0.9em; border-radius: 3px; }
-    .editor-btn:hover { background: #ddd; }
-    #tileText { border-radius: 0 0 4px 4px; margin-top:0; }
-
-    /* Buttons */
-    .btn { padding: 10px 18px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; transition: 0.2s; font-size: 0.95em; display: inline-flex; align-items: center; justify-content: center; gap: 5px; text-decoration: none; }
-    .btn-primary { background: #800000; color: white; }
-    .btn-primary:hover { background: #600000; transform: translateY(-1px); }
-    .btn-success { background: #27ae60; color: white; width: 100%; font-size: 1.1em; padding: 15px; }
-    .btn-success:hover { background: #219150; }
-    .btn-danger { background: #fee2e2; color: #c53030; padding: 6px 12px; font-size: 0.85em; }
-    .btn-danger:hover { background: #fecaca; }
-    .btn-action { background: #e2e8f0; color: #4a5568; padding: 6px 10px; }
-    .btn-action:hover { background: #cbd5e0; }
     
-    .btn-keep { background: #fff; color: #333; border: 2px solid #f1c40f; width: 100%; padding: 15px; margin-bottom: 20px; font-size: 1.1em; transition:0.2s;}
-    .btn-keep:hover { background: #fff9c4; border-color: #f39c12; transform: translateY(-1px); box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-
+    .btn { padding: 10px 18px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; transition: 0.2s; font-size: 0.95em; display: inline-flex; align-items: center; justify-content: center; gap: 5px; text-decoration: none; color: white; }
+    .btn-primary { background: #800000; }
+    .btn-primary:hover { background: #600000; transform: translateY(-1px); }
+    .btn-danger { background: #fee2e2; color: #c53030; }
+    .btn-danger:hover { background: #fecaca; }
+    .btn-keep { background: #fff; color: #333; border: 2px solid #f1c40f; width: 100%; padding: 15px; margin-bottom: 20px; font-size: 1.1em; }
+    .btn-keep:hover { background: #fff9c4; }
+    
     .output-options { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-bottom: 20px; }
     .btn-opt { padding: 20px; font-size: 1.1em; border: 2px solid transparent; color: white; }
     .btn-opt:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
@@ -57,48 +44,23 @@
     .opt-tiles { background: #2980b9; }
     .opt-table { background: #e67e22; }
 
-    /* Toast Notification */
-    #toast {
-        visibility: hidden; min-width: 250px; margin-left: -125px; background-color: #333; color: #fff; text-align: center; border-radius: 4px; padding: 16px; position: fixed; z-index: 1000; left: 50%; bottom: 30px; font-size: 17px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-    }
-    #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
-    #toast.success { background-color: #27ae60; }
-    @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} }
-    @keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 0; opacity: 0;} }
-
-    /* Admin Previews */
+    /* Previews */
     .tile-grid-preview { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 15px; }
-    .tile-card { background: white; border: 1px solid #ddd; border-radius: 6px; overflow: hidden; display: flex; flex-direction: column; position: relative; }
-    .tile-card:hover { border-color: #800000; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-    .edit-hint { position: absolute; top: 5px; right: 5px; background: rgba(255,255,255,0.9); padding: 2px 6px; font-size: 0.7em; border-radius: 3px; border: 1px solid #ccc; pointer-events: none; color: #333;}
+    .tile-card { background: white; border: 1px solid #ddd; border-radius: 6px; overflow: hidden; display: flex; flex-direction: column; position: relative; cursor: pointer;}
     .tile-img { height: 160px; background-color: #eee; background-size: cover; background-position: top center; border-bottom: 1px solid #eee; }
-    .tile-body { padding: 15px; flex: 1; display: flex; flex-direction: column; background: rgba(128, 0, 0, 0.04); }
-    .tile-title { font-weight: bold; color: #800000; margin-bottom: 5px; font-size: 1.1em; }
-    .tile-text { font-size: 0.95em; color: #555; flex: 1; margin-bottom: 15px; line-height: 1.4; white-space: pre-line; max-height: 100px; overflow-y: auto;}
+    .tile-body { padding: 15px; flex: 1; display: flex; flex-direction: column; }
+    .tile-title { font-weight: bold; color: #800000; margin-bottom: 5px; }
+    .tile-text { font-size: 0.9em; color: #555; }
 
     .table-preview { width: 100%; border-collapse: collapse; background: white; font-size: 0.9em; }
     .table-preview th { text-align: left; background: #f1f5f9; padding: 12px; border-bottom: 2px solid #e2e8f0; color: #475569; }
     .table-preview td { padding: 10px 12px; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
-    .table-header-row td { background: #fff1f2; color: #800000; font-weight: bold; text-transform: uppercase; font-size: 0.85em; letter-spacing: 1px; }
-    .check-yes { color: #27ae60; font-weight: bold; }
-    .check-no { color: #cbd5e0; }
-
-    /* Backup Area Styles */
-    .backup-container { background: #2d3748; padding: 25px; border-radius: 6px; color: white; }
-    .backup-textarea { width: 100%; height: 100px; background: #1a202c; color: #a0aec0; border: 1px solid #4a5568; padding: 10px; font-family: monospace; border-radius: 4px; box-sizing: border-box; margin: 5px 0; }
     
-    .fail-safe-box {
-        background: #fff3cd; 
-        color: #856404; 
-        border: 2px solid #ffeeba; 
-        padding: 15px; 
-        border-radius: 6px; 
-        margin-bottom: 25px;
-        display: flex;
-        align-items: center;
-        gap: 15px;
-    }
-    .fail-safe-icon { font-size: 2em; }
+    /* Toast */
+    #toast { visibility: hidden; min-width: 250px; margin-left: -125px; background-color: #333; color: #fff; text-align: center; border-radius: 4px; padding: 16px; position: fixed; z-index: 1000; left: 50%; bottom: 30px; }
+    #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
+    @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} }
+    @keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 0; opacity: 0;} }
 </style>
 </head>
 <body>
@@ -106,171 +68,86 @@
 <div class="container">
     <header>
         <h1>Infofrankrijk Funnel Manager</h1>
-        <div class="version">v26 FINAL LIVE</div>
+        <div class="version">v26 (Hersteld)</div>
     </header>
 
     <div class="tabs">
         <button class="tab active" onclick="switchTab('backup')">1. START & BACKUP</button>
-        <button class="tab" onclick="switchTab('tiles')">2. De Tegels (Vitrine)</button>
-        <button class="tab" onclick="switchTab('table')">3. De Tabel (Vergelijking)</button>
-        <button class="tab" onclick="switchTab('code')">4. KASSA (Code)</button>
+        <button class="tab" onclick="switchTab('tiles')">2. De Tegels</button>
+        <button class="tab" onclick="switchTab('table')">3. De Tabel</button>
+        <button class="tab" onclick="switchTab('code')">4. KASSA</button>
     </div>
 
     <div id="tab-backup" class="tab-content active">
-        
-        <div class="fail-safe-box">
-            <div class="fail-safe-icon">⚠️</div>
-            <div>
-                <strong>BELANGRIJK VOOR BEHEERDERS:</strong><br>
-                Heb je wijzigingen gedaan? Sla ze <strong>ALTIJD</strong> op in Google Keep.<br>
-                Als je dit venster sluit zonder op te slaan in Keep, is je werk weg.
+        <a href="https://keep.google.com/" target="_blank" class="btn btn-keep">📝 1. Open Google Keep</a>
+        <div style="display:flex; gap: 20px;">
+            <div style="flex:1;">
+                <label>2. KLAAR? OPSLAAN!</label>
+                <textarea id="exportArea" style="height:100px; width:100%; background:#1a202c; color:#ccc;" readonly onclick="this.select()"></textarea>
+                <button class="btn btn-primary" onclick="copyExport()">Kopieer</button>
+            </div>
+            <div style="flex:1;">
+                <label>3. BEGINNEN? INLADEN!</label>
+                <textarea id="importArea" style="height:100px; width:100%;" placeholder="Plak JSON..."></textarea>
+                <button class="btn btn-primary" style="background:#f39c12;" onclick="importData()">Data Inladen</button>
             </div>
         </div>
-
-        <div class="backup-container">
-            <a href="https://keep.google.com/#NOTE/19zNWkbyH7Ou878ICDUN6DQjTCJzadyE7LvUlsKwnqtnnE7Jwt-31gtf7u0CyZskj" target="_blank" class="btn btn-keep">
-                📝 1. KLIK HIER: Open Google Keep Notitie
-            </a>
-
-            <div style="display:flex; gap: 20px; flex-wrap: wrap;">
-                <div style="flex:1;">
-                    <label style="color:#f1c40f; font-weight:bold;">2. KLAAR? OPSLAAN!</label>
-                    <p style="font-size:0.8em; margin-top:0; color:#ccc;">Kopieer dit blok en plak het in Keep (overschrijf de oude).</p>
-                    <textarea id="exportArea" class="backup-textarea" readonly onclick="this.select()"></textarea>
-                    <button class="btn btn-primary" onclick="copyExport()">Kopieer naar klembord</button>
-                </div>
-                <div style="flex:1;">
-                    <label style="color:#27ae60; font-weight:bold;">3. BEGINNEN? INLADEN!</label>
-                    <p style="font-size:0.8em; margin-top:0; color:#ccc;">Plak hier de code uit Keep om verder te werken.</p>
-                    <textarea id="importArea" class="backup-textarea" placeholder="Plak hier je JSON code..."></textarea>
-                    <button class="btn btn-primary" style="background:#f39c12;" onclick="importData()">Data Inladen</button>
-                </div>
-            </div>
-            
-            <div style="margin-top: 30px; text-align:right; border-top: 1px solid #4a5568; padding-top: 15px;">
-                <button class="btn btn-danger" onclick="resetToDefault()">Noodgeval: Reset naar 'Gouden Master' (v26)</button>
-            </div>
+        <div style="text-align:right; margin-top:20px;">
+            <button class="btn btn-danger" onclick="resetToDefault()">🔴 Noodgeval: Reset naar 'Gouden Master'</button>
         </div>
     </div>
 
     <div id="tab-tiles" class="tab-content">
         <div class="panel">
-            <h3>Tegel Bewerken / Toevoegen</h3>
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Titel</label>
-                    <input type="text" id="tileTitle" placeholder="Bijv. Bruto-Netto Calculator">
-                </div>
-                <div class="form-group">
-                    <label>Afbeelding URL</label>
-                    <input type="text" id="tileImg" placeholder="https://infofrankrijk.com/...">
-                </div>
-            </div>
-            <div class="form-group">
-                <label>Tekst (Wervend)</label>
-                <div class="editor-toolbar">
-                    <button class="editor-btn" onclick="formatText('bold')" title="Dikgedrukt">B</button>
-                    <button class="editor-btn" onclick="formatText('italic')" title="Schuingedrukt">I</button>
-                    <button class="editor-btn" onclick="formatText('list')" title="Opsomming">• Lijst</button>
-                </div>
-                <textarea id="tileText" placeholder="Beschrijf de tool... Gebruik Enter voor nieuwe regels."></textarea>
-            </div>
-            <button class="btn btn-primary" onclick="addTile()">+ Opslaan / Toevoegen</button>
+            <div class="form-row"><input type="text" id="tileTitle" placeholder="Titel"><input type="text" id="tileImg" placeholder="Afbeelding URL"></div>
+            <textarea id="tileText" placeholder="Tekst..."></textarea>
+            <button class="btn btn-primary" onclick="addTile()" style="margin-top:10px;">+ Toevoegen</button>
         </div>
         <div id="tileList" class="tile-grid-preview"></div>
     </div>
 
     <div id="tab-table" class="tab-content">
         <div class="panel">
-            <h3>Regel Toevoegen</h3>
             <div class="form-row">
-                <div class="form-group" style="flex: 0 0 150px;">
-                    <label>Type</label>
-                    <select id="rowType">
-                        <option value="item">Dienst / Tool</option>
-                        <option value="header">Tussenkop</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Naam / Omschrijving</label>
-                    <input type="text" id="rowName" placeholder="Omschrijving van de dienst">
-                </div>
-                <div class="form-group">
-                    <label>Link URL (Optioneel)</label>
-                    <input type="text" id="rowLink" placeholder="https://...">
-                </div>
+                <select id="rowType"><option value="item">Item</option><option value="header">Kop</option></select>
+                <input type="text" id="rowName" placeholder="Naam">
+                <input type="text" id="rowLink" placeholder="Link">
             </div>
-            <div style="margin-bottom: 15px;">
-                <label style="display:inline-block; margin-right: 20px; cursor:pointer;">
-                    <input type="checkbox" id="visCheck"> Toegankelijk voor Bezoeker?
-                </label>
-                <label style="display:inline-block; cursor:pointer;">
-                    <input type="checkbox" id="subCheck" checked> Toegankelijk voor Abonnee?
-                </label>
-            </div>
-            <button class="btn btn-primary" onclick="addTableRow()">+ Toevoegen aan Tabel</button>
+            <label><input type="checkbox" id="visCheck"> Bezoeker?</label>
+            <label><input type="checkbox" id="subCheck" checked> Abonnee?</label>
+            <button class="btn btn-primary" onclick="addTableRow()" style="margin-top:10px;">+ Toevoegen</button>
         </div>
-        <table class="table-preview">
-            <thead><tr><th>Item</th><th width="50" style="text-align:center">Bez</th><th width="50" style="text-align:center">Abo</th><th width="120" style="text-align:center">Actie</th></tr></thead>
-            <tbody id="tableList"></tbody>
-        </table>
+        <table class="table-preview"><tbody id="tableList"></tbody></table>
     </div>
 
     <div id="tab-code" class="tab-content">
-        <div style="text-align:center; max-width: 800px; margin: 0 auto;">
-            <h2 style="color:#333; margin-bottom: 20px;">Wat wil je publiceren?</h2>
-            
-            <div class="output-options">
-                <button class="btn btn-opt opt-all" onclick="generateCode('all')">
-                    <strong>📦 ALLES (Direct zichtbaar)</strong><br>
-                    <span style="font-size:0.8em; opacity:0.8">Tegels + Tabel</span>
-                </button>
-                
-                <button class="btn btn-opt opt-tiles" onclick="generateCode('tiles')">
-                    <strong>🖼️ ALLEEN TEGELS</strong><br>
-                    <span style="font-size:0.8em; opacity:0.8">Het grid met plaatjes</span>
-                </button>
-                
-                <button class="btn btn-opt opt-table" onclick="generateCode('table')">
-                    <strong>📊 ALLEEN TABEL</strong><br>
-                    <span style="font-size:0.8em; opacity:0.8">De vergelijking</span>
-                </button>
-            </div>
-
-            <p style="color:#666; margin-bottom: 10px; font-style:italic;">Update v26: Tabel kolommen verbreed (90px) voor nette prijzen op mobiel.</p>
+        <div class="output-options">
+            <button class="btn btn-opt opt-all" onclick="generateCode('all')">📦 ALLES</button>
+            <button class="btn btn-opt opt-tiles" onclick="generateCode('tiles')">🖼️ TEGELS</button>
+            <button class="btn btn-opt opt-table" onclick="generateCode('table')">📊 TABEL</button>
         </div>
-        <textarea id="finalCode" style="width:100%; height:300px; margin-top:10px; border:1px solid #ddd; padding:15px; font-family:monospace; color:#555;" readonly onclick="this.select()"></textarea>
+        <textarea id="finalCode" style="width:100%; height:300px; border:1px solid #ddd; padding:15px; font-family:monospace;" readonly onclick="this.select()"></textarea>
     </div>
 </div>
 
 <div id="toast">Melding</div>
 
 <script>
-/* ======================================================
-   FAIL-SAFE DEFAULT DATA (V26 - CLEAN LINKS & TABLE FIX)
-   ====================================================== */
+/* SCHONE DATA - GEEN TEMPURL */
 const defaultData = {"tiles":[{"title":"Beroepseisen checker","img":"https://infofrankrijk.com/wp-content/uploads/2025/12/beroepengids-scaled.png","text":"We hebben inmiddels meer dan 60 beroepen en ondernemersactiviteiten in dit handige overzicht geplaatst. In één enkel instrument vind je: \n\n• alle beroepseisen, \n\n• benodigde diploma's, \n\n• bij welke \"Chambre\" aanmelden \n\n• zelfs een prognose van inkomstenpotentieel. \n\nDe basis is een dynamische koppeling met de Franse overheid waardoor deze tool altijd up to date is. In 2026 zullen we de checker uitbreiden met meer beroepen en sectoren voor ondernemers. "},{"title":"Contrôle Technique | APK","img":"https://infofrankrijk.com/wp-content/uploads/2025/12/apk-keuring-poctcoe-scaled.png","text":"<b>Voer je postcode in Frankrijk in en:</b>\n\n• Zie direct waar je de Contrôle Technique uit kunt laten voeren. \n• Met een prijsvergelijker. \n\nVanaf 2026 voegen we actuele benzineprijs- en tankstationdata toe aan deze bestaande APK-keuringsstations-tool, zodat u met één klik het goedkoopste station in uw departement kunt vinden."},{"title":"Kosten van de vastgoedtransactie","img":"https://infofrankrijk.com/wp-content/uploads/2025/12/transactiekosten-vastgoed.png","text":"<b>Deze slimme simulator berekent de totale kosten van een vastgoedtransactie:</b>\n\n• de notariskosten, \n• de eventuele makelaarskosten\nen de facultative kosten zoals:\n\n• de mainlevée d'hypothèque, \n• SPANC-assainissement, \n• de géomètre \n• en de hypotheekgarantie (caution). \n\nDeze totale kosten voor zowel de verkoper als de koper <b>kunnen</b> fors oplopen. Zeker als het een tweede woning is en het huis wordt binnen - zeg - tien jaar weer verkocht. "},{"title":"Calculator voor energiekosten","img":"https://infofrankrijk.com/wp-content/uploads/2025/12/energiecalculator-scaled.png","text":"Praktische scenariocalculator met geïntegreerde berekeningen voor isolatie, ventilatie, verwarmingssystemen,\nzonnepanelen, zwembad en Franse klimaatzones.\n\n<b>Unieke waardepropositie</b>\n\n• Combineert fysisch onderbouwde transmissie- en ventilatieverliezen met rendementsscenario’s (SCOP/COP), bijverwarming en zwembadgebruik. \n• Energietarieven zijn volledig door u instelbaar – geen theoretische aannames, maar praktische vergelijkingen in kWh en kosten.\n• Live-feeds & bronintegriteit.\n\n<b>Rekendefaults updaten periodiek via open-data-synchronisatie:</b>\n\n• Zonne-instraling per Franse klimaatzone, realistische SCOP-ranges voor gangbare warmtepompsystemen en zwembadseizoen- & verliesparameters (incl. afdekking en windfactoren), gebaseerd op publieke normlogica zoals EN-ISO-warmteoverdracht en graaddagen-principes.\n• Vergelijk hoofd- vs. bijverwarming op jaarbasis (kWh / L / kg / €), incl. COP-dip bij vorst.\n• Automatische PV-verrekening met 70% eigen verbruik als transparant startpunt.\n• Zwembadscenario’s met afdekking- & windfactoren (WP, gas of elektra).\n• Hoge nauwkeurigheid met echte invoer: U-waarden, ACH, volume, SCOP, energietarieven.\n\nDoelgroep: woningeigenaren in Frankrijk die installaties, renovatieprioriteit en terugverdientijd nuchter willen doorrekenen vóór offertes en systeemkeuzes."},{"title":"Plus Value Calculator","img":"https://infofrankrijk.com/wp-content/uploads/2025/12/plusvalue-calculator.png","text":"Bereken Franse vastgoedwinstbelasting (Plus-Value Immobilière) snel en exact.\nInclusief afschrijvingsvoordeel, forfait-opties en uitsplitsing per jaartal.\n\n<b>Direct PDF-export voor uw dossier.</b>"},{"title":"Klus- en forum-archief","img":"https://infofrankrijk.com/wp-content/uploads/2025/12/klussen-in-frankrijk.png","text":"<b>Het hele klusforum van Infofrankrijk in één scherm? </b>\nJa hoor, het kan wel. Meer dan 12 jaar aan zeer uitgebreide en deskundige bijdragen van de forumdeelnemers van Infofrankrijk worden hier inzichtelijk gemaakt. \n\nDeze module is trouwens <b>gratis</b>, ook als je geen abonnee bent kun je hier gebruik van maken. \n\nVerder gaan we in 2026 de inhoud van de rubriek <b>\"Klussen in Frankrijk\"</b> nog completer maken en zoveel mogelijk in haar oude fantastische staat herstellen.   "},{"title":"Internet vindmodule","img":"https://infofrankrijk.com/wp-content/uploads/2025/12/internetfinder-scaled.png","text":"<b>Korte, beschrijving van de tool:</b>\n\n• Dit is een interactieve adres-checker die in twee stappen toont of glasvezel of DSL op uw locatie beschikbaar is.\n• Directe doorlinks naar de belangrijkste Franse glasvezel-providers en aanvullende diensten voor Orange Fibre, SFR Fibre, Bouygues Fibre en Free Fibre.\n• Praktische extra tips (linkjes) voor Nederlandse NLZIET, Canal Digitaal, en VPN-bescherming via NordVPN en Surfshark.\n"},{"title":"Bruto naar netto in FR | BE | NL","img":"https://infofrankrijk.com/wp-content/uploads/2025/12/bruto-netto-calculator-scaled.png","text":"<b>Inkomensanalyse: bruto/netto simulator.</b>\n\nVergelijk je netto-inkomsten in Frankrijk met Nederland of België.\n\nHet Franse belastingsysteem verschilt in menig opzicht van wat u gewend bent. Deze vergelijkingstool biedt een eerste oriëntatie op uw netto inkomen na emigratie.\n\n<b>Wat levert het op?</b>\n\n• De tool berekent een globale indicatie van uw netto inkomen in Frankrijk versus uw thuisland. U krijgt inzicht in de belangrijkste verschillen: sociale premies, belastingschijven en het Franse gezinsquotiënt.\n• Dit is geen exacte berekening maar een degelijke basis voor verdere planning. Met deze eerste inschatting kunt u gerichter in gesprek met uw accountant of belastingadviseur.\n\n<b>Voor wie?</b>\nNederlanders en Belgen die overwegen in Frankrijk te gaan werken of ondernemen. De tool houdt rekening met gezinssituatie en geeft een realistisch beeld van de financiële consequenties van emigratie."},{"title":"Nieuwsbrief en videocalls","img":"https://infofrankrijk.com/wp-content/uploads/2025/12/nieuwsbrief.png","text":"<b>Ben je abonnee? </b>\n\n• Dan krijg je automatisch onze nieuwsbrief met updates en aankondigingen van nieuwe tools. \n• Iedere 2 à 3 maanden brengen we je op de hoogte van de laatste ontwikkelingen. \n• Neem deel aan de videoconferenties om je wensen kenbaar te maken. "},{"title":"Handige assistent Franse taal","img":"https://infofrankrijk.com/wp-content/uploads/2025/12/taalassistent-scaled.png","text":"<b>DIT IS GEEN CURSUS!</b>\n\nHet is een <b>VERTALER/TOLK</b> die je altijd bij je hebt. Een tool waarmee je per situatie (scenario) een vocabulaire en voorbeeldzinnen krijgt aangereikt die je helpen om de juiste dingen te zeggen. En, we hebben deze tool zo gemaakt dat je deze makkelijk op je telefoon kunt zetten. \n\n<b>Op dit moment zijn er 14 hoofdscenario's:</b>\n\n1. <b>SHOPPING</b>: met meer dan 10 WINKELSOORTEN van 'Boucherie' tot 'Traiteur'\n2. <b>TELEFOON</b>: 9 situaties zoals bellen, opnemen, nummer (ook je eigen nummer) uitspreken enz.\n3. <b>FINANCIEEL</b>: bank & betalen, rekening openen, RIB, incasso’s, limieten, kaart/contactloos enz. \n4. <b>HUISHOUDEN</b>: van ongediertebestrijding tot zwembad, bedenk het maar...\n5. <b>LA MAIRIE</b>: met 4 situaties die je daar kunt tegenkomen\n6. <b>GEZONDHEIDSZORG</b>: van huisarts tot apotheek \n\n...  en zo verder tot <b>14</b> hoofdscenario's en - per scenario- een veelvoud aan de vocabulaire en voorbeeldzinnen die handig van pas kunnen komen. En natuurlijk gaan we de taalassistent verder uitbouwen in 2026, kom maar op met je wensen en ideeën!"},{"title":"Officiële instellingen / postcode (75005)","img":"https://infofrankrijk.com/wp-content/uploads/2025/12/dasboard-admin.png","text":"<b>Vind direct lokale Franse overheidsdiensten. </b>\n\n• VOER JE FRANSE POSTCODE IN.\n• CONTACTGEVENS VAN DE MEESTE ADMINISTRATIEVE DIENSTEN:\n\n<i>[ CAF - CPAM - PRÉFECTUUR - MAIRIE - URRSAF - DGFIP - DDT/DDTM - POLICE/COMMISSARIAT - GENDARMERIE - HÔPITAL - PÔLE EMPLOI - TRÉSORERIE - FRANCE SERVICE ]</i>\n\n<b>Bij jou in de buurt natuurlijk !</b>"},{"title":"Uw testament en erfrecht in Frankrijk","img":"https://infofrankrijk.com/wp-content/uploads/2025/12/erfrecht-testament-fr2.png","text":"<b>Uw Franse erfenis of testament regelen?</b>\n\nHet regelen van een erfenis of testament in Frankrijk roept bij veel Nederlanders en Belgen vragen op. Geldt het Franse of Nederlandse recht? Hoe voorkomt u dubbele erfbelasting? En wat zijn de valkuilen voor samengestelde gezinnen?\n\nGebruik deze interactieve gids om direct te zien welke regels voor uw situatie gelden. Deze tool bundelt, in 7 tabbladen, de officiële informatie van de Europese Unie, de Franse overheid en juridische experts."},{"title":"Officiële instellingen / postcode (75005)","img":"https://infofrankrijk.com/wp-content/uploads/2025/12/dasboard-admin.png","text":"<b>Vind direct lokale Franse overheidsdiensten. </b>\n\n• VOER JE FRANSE POSTCODE IN.\n• CONTACTGEVENS VAN DE MEESTE ADMINISTRATIEVE DIENSTEN:\n\n<i>[ CAF - CPAM - PRÉFECTUUR - MAIRIE - URRSAF - DGFIP - DDT/DDTM - POLICE/COMMISSARIAT - GENDARMERIE - HÔPITAL - PÔLE EMPLOI - TRÉSORERIE - FRANCE SERVICE ]</i>\n\n<b>Bij jou in de buurt natuurlijk !</b>"},{"title":"Vind het juiste 'loket' voor jouw onderneming","img":"https://infofrankrijk.com/wp-content/uploads/2025/12/lokettenvinder-scaled.png","text":"Met deze tool zoekt u per postcode en activiteit de lokale instanties die verantwoordelijk zijn voor uw registratie. Controleer eerst het overzicht van 61 gereguleerde beroepen om te zien welke sectoren en verplichtingen van toepassing zijn op uw activiteit."},{"title":"Plus Value Calculator","img":"https://infofrankrijk.com/wp-content/uploads/2025/12/plusvalue-calculator.png","text":"Bereken Franse vastgoedwinstbelasting (Plus-Value Immobilière) snel en exact.\nInclusief afschrijvingsvoordeel, forfait-opties en uitsplitsing per jaartal.\n\n<b>Direct PDF-export voor uw dossier.</b>"},{"title":"Zorgkompas","img":"https://infofrankrijk.com/wp-content/uploads/2025/12/zorgkompas-scaled.png","text":"<b>Het Zorgkompas Frankrijk is een educatieve simulator.</b>\nDeze geeft inzicht in de kostenstroom van medische handelingen. De tool visualiseert direct wie wat betaalt: \n\n• de basisverzekering (Ameli/Sécu), \n• uw aanvullende verzekering (Mutuelle) en \n• uw eigen bijdrage."},{"title":"Meer instrumenten in de maak...","img":"https://infofrankrijk.com/wp-content/uploads/2025/12/tools-2026-en-daarna-scaled.png","text":"<b>Onze commitment voor de toekomst: </b>\n\nIn de komende maanden breiden we ons platform gericht uit met meer slimme tools en verdere verfijning van bestaande instrumenten. De tools die nu beschikbaar zijn, bevinden zich bewust in bèta: functioneel, maar in ontwikkeling. We horen graag hoe jij ze ervaart. \n\n<b>Concreet werken we onder meer aan:</b>\n\n• Een persoonlijk, privé dashboard waarin al jouw opgebouwde dossiers worden bewaard (lokaal in de browser).\n• Een vastgoed-analysetool die advertenties snel vertaalt naar kansen, valkuilen en relevante omgevingsfactoren.\n• Maatwerkdossiers afgestemd op jouw persoonlijke situatie en verblijf in Frankrijk.\n\nDeze tools worden waar mogelijk gevoed door slimme live-koppelingen (API’s) met betrouwbare bronnen van de Franse overheid en officiële instellingen, zodat informatie actueel, verifieerbaar en praktisch toepasbaar blijft. \n\nEn dit is pas het begin. Nieuwe functionaliteiten worden stapsgewijs toegevoegd en doorlopend aangescherpt op basis van praktijkgebruik."}],"table":[{"type":"header","name":"Algemeen"},{"type":"item","name":"Infofrankrijk; de basis (vele artikelen)","vis":true,"sub":true},{"type":"item","name":"Dagelijkse nieuwsbrief (gerenoveerd in 2026!)","link":"https://infofrankrijk.com/nieuwsbrief/","vis":true,"sub":true},{"type":"item","name":"Het forum van Nederlanders.fr blijft gratis","vis":true,"sub":true},{"type":"header","name":"DOSSIERS"},{"type":"item","name":"Ondernemen in Frankrijk","vis":true,"sub":true},{"type":"item","name":"Vastgoedbezit in Frankrijk","vis":true,"sub":true},{"type":"item","name":"85 PDF bestanden uit 'Klussen in Frankrijk'","link":"https://infofrankrijk.com/2025/08/26/klussen/","vis":true,"sub":true},{"type":"item","name":"De gratis Klussen in Frankrijk Module","link":"https://infofrankrijk.com/2025/11/30/uit-het-klusforum-van-infofrankrijk-com/","vis":true,"sub":true},{"type":"item","name":"Dossiers worden voortdurend geactualiseerd","link":"","vis":true,"sub":true},{"type":"header","name":"Bij u in de buurt"},{"type":"item","name":"Internet beschikbaarheid","link":"https://infofrankrijk.com/2025/11/12/internet/","vis":true,"sub":true},{"type":"item","name":"Overheden en instellingen","link":"https://infofrankrijk.com/2025/11/14/overheden/","vis":true,"sub":true},{"type":"item","name":"Contrôle Technique | APK - Postcode","link":"https://infofrankrijk.com/2025/11/26/de-controle-technique-de-franse-apk/","vis":true,"sub":true},{"type":"item","name":"Internet bij jouw huis in Frankrijk","link":"https://infofrankrijk.com/2025/11/12/internetverbinding-in-frankrijk/","vis":true,"sub":true},{"type":"header","name":"SIMULATIE- EN REKENMODULES"},{"type":"item","name":"Periodieke nieuwsbrief & nieuwe tools","vis":false,"sub":true},{"type":"item","name":"Zorgkompas Frankrijk: simulator","link":"https://infofrankrijk.com/2025/11/21/zorgkompas/","vis":false,"sub":true},{"type":"item","name":"Bruto-Netto simulator NL <> FR","link":"https://infofrankrijk.com/2025/11/10/financieel/","vis":false,"sub":true},{"type":"item","name":"Simulatiemodule Energieverbruik","link":"https://infofrankrijk.com/2025/09/22/energie/","vis":false,"sub":true},{"type":"item","name":"Beroepenchecker","link":"https://infofrankrijk.com/2025/11/20/werken/","vis":false,"sub":true},{"type":"item","name":"Plus-Value-Calculator","link":"https://infofrankrijk.com/2025/11/08/plus-value-calculator/","vis":false,"sub":true},{"type":"item","name":"Inzage in de kosten van de vastgoedtransactie","link":"https://infofrankrijk.com/vastgoed-transactiekosten/","vis":false,"sub":true},{"type":"item","name":"Deze portfolio wordt uitgebreid in 2026","link":"https://infofrankrijk.com/2026-een-nieuwe-fase-voor-infofrankrijk/","vis":true,"sub":true}]};
 
 let appData = JSON.parse(JSON.stringify(defaultData));
 
-/* INIT & TABS */
 function init() {
-    // Probeer data uit local storage te halen
     const saved = localStorage.getItem('if_v26_data');
     if(saved) {
         appData = JSON.parse(saved);
-    } 
-    // Is de data nog de oude 'tempurl' versie? Reset dan naar de nieuwe default!
-    const jsonString = JSON.stringify(appData);
-    if(jsonString.includes('tempurl.host')) {
-        console.log("Old domain detected. Auto-migrating data to infofrankrijk.com...");
-        appData = JSON.parse(JSON.stringify(defaultData));
-        saveData();
     }
-
-    renderTiles();
-    renderTable();
-    updateExportArea();
+    // Auto-fix tempurl
+    if(JSON.stringify(appData).includes('tempurl.host')) {
+        appData = JSON.parse(JSON.stringify(defaultData));
+    }
+    renderTiles(); renderTable(); updateExportArea();
 }
 
 function switchTab(id) {
@@ -280,460 +157,73 @@ function switchTab(id) {
     event.target.classList.add('active');
 }
 
-function showToast(msg, type="success") {
+function showToast(msg) {
     const x = document.getElementById("toast");
-    x.innerText = msg;
-    x.className = "show " + type;
-    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+    x.innerText = msg; x.className = "show"; setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
 }
 
-function saveData() {
-    localStorage.setItem('if_v26_data', JSON.stringify(appData));
-    updateExportArea();
-}
-
-/* FORMAT TEXT HELPER */
-function formatText(command) {
-    const textarea = document.getElementById('tileText');
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    const text = textarea.value;
-    const selected = text.substring(start, end);
-    let replacement = "";
-
-    if (command === 'bold') replacement = `<b>${selected}</b>`;
-    if (command === 'italic') replacement = `<i>${selected}</i>`;
-    if (command === 'list') replacement = `\n• ${selected}`;
-
-    textarea.value = text.substring(0, start) + replacement + text.substring(end);
-    textarea.focus();
-    textarea.selectionEnd = start + replacement.length;
-}
-
-/* TILES LOGIC */
-function addTile() {
-    const title = document.getElementById('tileTitle').value;
-    const img = document.getElementById('tileImg').value;
-    const text = document.getElementById('tileText').value;
-
-    if(!title) { showToast("Vul minstens een titel in!", "error"); return; }
-
-    appData.tiles.push({
-        title: title,
-        img: img || "https://via.placeholder.com/600x350/eee/800000?text=Geen+Afbeelding",
-        text: text
-    });
-    
-    document.getElementById('tileTitle').value = "";
-    document.getElementById('tileImg').value = "";
-    document.getElementById('tileText').value = "";
-    
-    renderTiles();
-    saveData();
-    showToast("✅ Tegel toegevoegd!");
-}
-
-function loadTileToEdit(idx) {
-    const t = appData.tiles[idx];
-    document.getElementById('tileTitle').value = t.title;
-    document.getElementById('tileImg').value = t.img;
-    document.getElementById('tileText').value = t.text;
-    
-    if(confirm("Bewerken: '" + t.title + "'?\nDe oude wordt verwijderd zodra je op 'Opslaan' klikt.")) {
-        appData.tiles.splice(idx, 1);
-        renderTiles();
-        window.scrollTo(0,0);
-        showToast("✏️ Gegevens ingeladen in formulier");
-    }
-}
-
-function deleteTile(idx) {
-    if(confirm("Weet je zeker dat je deze tegel wilt verwijderen?")) {
-        appData.tiles.splice(idx, 1);
-        renderTiles();
-        saveData();
-        showToast("🗑️ Tegel verwijderd");
-    }
-}
-
-function renderTiles() {
-    const list = document.getElementById('tileList');
-    list.innerHTML = "";
-    appData.tiles.forEach((t, i) => {
-        // Voor preview in admin gebruiken we ook een simpele replace voor enters
-        const previewText = t.text.replace(/\n/g, '<br>');
-        list.innerHTML += `
-            <div class="tile-card" onclick="loadTileToEdit(${i})" style="cursor:pointer;" title="Klik om te bewerken">
-                <div class="edit-hint">✎ Klik om te bewerken</div>
-                <div class="tile-img" style="background-image:url('${t.img}')"></div>
-                <div class="tile-body">
-                    <div class="tile-title">${t.title}</div>
-                    <div class="tile-text">${previewText}</div>
-                    <button class="btn btn-danger" style="margin-top:auto; z-index:10;" onclick="event.stopPropagation(); deleteTile(${i})">Verwijderen</button>
-                </div>
-            </div>`;
-    });
-}
-
-/* TABLE LOGIC */
-function addTableRow() {
-    const type = document.getElementById('rowType').value;
-    const name = document.getElementById('rowName').value;
-    if(!name) { showToast("Vul een naam in!", "error"); return; }
-    
-    const row = { type, name };
-    if(type === 'item') {
-        row.link = document.getElementById('rowLink').value;
-        row.vis = document.getElementById('visCheck').checked;
-        row.sub = document.getElementById('subCheck').checked;
-    }
-    appData.table.push(row);
-    
-    document.getElementById('rowName').value = "";
-    document.getElementById('rowLink').value = "";
-    renderTable();
-    saveData();
-    showToast("✅ Regel toegevoegd");
-}
-
-function deleteRow(idx) {
-    if(confirm("Regel verwijderen?")) { appData.table.splice(idx, 1); renderTable(); saveData(); showToast("🗑️ Regel verwijderd"); }
-}
-
-function moveRow(idx, dir) {
-    const newIdx = idx + dir;
-    if(newIdx >= 0 && newIdx < appData.table.length) {
-        [appData.table[idx], appData.table[newIdx]] = [appData.table[newIdx], appData.table[idx]];
-        renderTable();
-        saveData();
-    }
-}
-
-function renderTable() {
-    const list = document.getElementById('tableList');
-    list.innerHTML = "";
-    appData.table.forEach((r, i) => {
-        let html = "";
-        if(r.type === 'header') {
-            html = `<tr class="table-header-row"><td colspan="3">${r.name}</td>`;
-        } else {
-            let link = r.link ? `<span style="font-size:0.8em; color:#3498db;">(link)</span>` : '';
-            html = `<tr>
-                <td>${r.name} ${link}</td>
-                <td align="center">${r.vis ? '<span class="check-yes">✔</span>' : '<span class="check-no">✘</span>'}</td>
-                <td align="center">${r.sub ? '<span class="check-yes">✔</span>' : '<span class="check-no">✘</span>'}</td>`;
-        }
-        html += `<td align="center">
-            <button class="btn btn-action" onclick="moveRow(${i}, -1)">↑</button>
-            <button class="btn btn-action" onclick="moveRow(${i}, 1)">↓</button>
-            <button class="btn btn-danger" onclick="deleteRow(${i})">×</button>
-        </td></tr>`;
-        list.innerHTML += html;
-    });
-}
-
-/* BACKUP */
+function saveData() { localStorage.setItem('if_v26_data', JSON.stringify(appData)); updateExportArea(); }
 function updateExportArea() { document.getElementById('exportArea').value = JSON.stringify(appData); }
-function copyExport() { document.getElementById('exportArea').select(); document.execCommand('copy'); showToast("📋 Data gekopieerd!"); }
+function copyExport() { document.getElementById('exportArea').select(); document.execCommand('copy'); showToast("Gekopieerd!"); }
 function importData() {
-    const txt = document.getElementById('importArea').value.trim();
-    if(!txt) { showToast("Plak eerst code!", "error"); return; }
-    try { appData = JSON.parse(txt); renderTiles(); renderTable(); saveData(); showToast("✅ Data hersteld!"); } catch(e) { alert("Fout: Ongeldige JSON."); }
+    try { appData = JSON.parse(document.getElementById('importArea').value); renderTiles(); renderTable(); saveData(); showToast("Geladen!"); } catch(e){alert("Fout");}
 }
-function resetToDefault() { if(confirm("Noodgeval: Resetten naar de schone master data (v26)?")) { appData = JSON.parse(JSON.stringify(defaultData)); renderTiles(); renderTable(); saveData(); showToast("🔄 Data Hersteld!"); } }
+function resetToDefault() {
+    if(confirm("Resetten?")) { appData = JSON.parse(JSON.stringify(defaultData)); renderTiles(); renderTable(); saveData(); showToast("Gereset!"); }
+}
 
-/* =========================================================
-   DE GENERATOR ENGINE (V26 - TABLE FIX & CLEAN LINKS)
-   ========================================================= */
+function addTile() {
+    appData.tiles.push({ title: document.getElementById('tileTitle').value, img: document.getElementById('tileImg').value, text: document.getElementById('tileText').value });
+    renderTiles(); saveData();
+}
+function deleteTile(idx) { appData.tiles.splice(idx, 1); renderTiles(); saveData(); }
+function renderTiles() {
+    document.getElementById('tileList').innerHTML = appData.tiles.map((t,i) => 
+        `<div class="tile-card" onclick="deleteTile(${i})"><div class="tile-img" style="background-image:url('${t.img}')"></div><div class="tile-body"><div class="tile-title">${t.title}</div><div class="tile-text">${t.text.substring(0,50)}...</div></div></div>`
+    ).join('');
+}
+
+function addTableRow() {
+    appData.table.push({ type: document.getElementById('rowType').value, name: document.getElementById('rowName').value, link: document.getElementById('rowLink').value, vis: document.getElementById('visCheck').checked, sub: document.getElementById('subCheck').checked });
+    renderTable(); saveData();
+}
+function deleteRow(idx) { appData.table.splice(idx, 1); renderTable(); saveData(); }
+function renderTable() {
+    document.getElementById('tableList').innerHTML = appData.table.map((r,i) => 
+        `<tr><td>${r.name}</td><td>${r.vis?'V':''}</td><td>${r.sub?'V':''}</td><td><button onclick="deleteRow(${i})">x</button></td></tr>`
+    ).join('');
+}
+
 function generateCode(mode) {
-    
-    // 1. TILES GENERATION 
-    let tilesHTML = '';
-    if(mode === 'all' || mode === 'tiles') {
-        tilesHTML = '<div class="if-grid">';
-        appData.tiles.forEach((t, index) => {
-            const processedText = t.text.replace(/\n/g, '<br>');
-            
-            tilesHTML += `
-            <div class="if-card">
-                <div class="if-card-img" style="background-image:url('${t.img}')"></div>
-                <div class="if-card-content">
-                    <h3>${t.title}</h3>
-                    <div class="if-text-scroll">
-                        <p>${processedText}</p>
-                    </div>
-                    <div class="if-card-actions">
-                        <a href="https://infofrankrijk.com/abonnement/" class="if-btn-mini if-btn-red" target="_blank">Word abonnee</a>
-                        <a href="https://infofrankrijk.com/aanmelden/" class="if-btn-mini if-btn-link" target="_blank">Log in</a>
-                    </div>
-                </div>
-            </div>`;
-        });
-        tilesHTML += '</div>';
-    }
+    let tiles = '<div class="if-grid">';
+    appData.tiles.forEach(t => tiles += `<div class="if-card"><div class="if-card-img" style="background-image:url('${t.img}')"></div><div class="if-card-content"><h3>${t.title}</h3><div class="if-text-scroll"><p>${t.text.replace(/\n/g,'<br>')}</p></div><div class="if-card-actions"><a href="https://infofrankrijk.com/abonnement/" class="if-btn-mini if-btn-red" target="_blank">Word abonnee</a><a href="https://infofrankrijk.com/aanmelden/" class="if-btn-mini if-btn-link" target="_blank">Log in</a></div></div></div>`);
+    tiles += '</div>';
 
-    // 2. TABLE GENERATION
-    let tableHTML = '';
-    if(mode === 'all' || mode === 'table') {
-        // V26: .col-s now used for 90px width
-        tableHTML = '<div class="if-tbl-container"><table class="if-tbl"><thead><tr><th class="tl">DIENST / INSTRUMENT</th><th class="col-s">BEZ</th><th class="col-s">ABO</th></tr></thead><tbody>';
-        appData.table.forEach(r => {
-            if(r.type === 'header') {
-                tableHTML += `<tr><td colspan="3" class="if-th">${r.name}</td></tr>`;
-            } else {
-                let linkHTML = r.link ? `<a href="${r.link}" target="_blank" class="if-link-icon"><svg viewBox="0 0 24 24"><path d="M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3m-2 16H5V5h7V3H5c-1.11 0-2 .89-2 2v14c0 1.11.89 2 2 2h14c1.11 0 2-.89 2-2v-7h-2v7z"/></svg></a>` : '';
-                tableHTML += `<tr><td class="if-td-name">${r.name}${linkHTML}</td><td class="if-icon col-s">${r.vis?'<span class="c-yes">✔</span>':'<span class="c-no">✘</span>'}</td><td class="if-icon bg-sub col-s">${r.sub?'<span class="c-yes">✔</span>':'<span class="c-no">✘</span>'}</td></tr>`;
-            }
-        });
-        tableHTML += `<tr><td style="font-weight:bold; color:#800000;">KOSTEN</td><td style="text-align:center;">Gratis</td><td style="text-align:center; font-weight:bold; color:#800000; background:#fffbfc;">€49 / jaar</td></tr></tbody></table></div>`;<!DOCTYPE html>
-<html lang="nl">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Infofrankrijk Funnel Manager v26 FINAL</title>
-<style>
-    /* --- ADMIN DASHBOARD STYLING --- */
-    body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f4f6f8; margin: 0; padding: 20px; color: #333; }
-    .container { max-width: 1200px; margin: 0 auto; background: white; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); overflow: hidden; min-height: 80vh; }
-    
-    header { background: #800000; color: white; padding: 20px 30px; display: flex; justify-content: space-between; align-items: center; }
-    h1 { margin: 0; font-size: 1.4em; }
-    .version { font-size: 0.8em; opacity: 0.8; background: rgba(255,255,255,0.2); padding: 2px 8px; border-radius: 4px; }
+    let tbl = '<div class="if-tbl-container"><table class="if-tbl"><thead><tr><th class="tl">DIENST / INSTRUMENT</th><th class="col-s">BEZ</th><th class="col-s">ABO</th></tr></thead><tbody>';
+    appData.table.forEach(r => {
+        if(r.type==='header') tbl+=`<tr><td colspan="3" class="if-th">${r.name}</td></tr>`;
+        else {
+            let l = r.link ? `<a href="${r.link}" target="_blank" class="if-link-icon"><svg viewBox="0 0 24 24"><path d="M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3m-2 16H5V5h7V3H5c-1.11 0-2 .89-2 2v14c0 1.11.89 2 2 2h14c1.11 0 2-.89 2-2v-7h-2v7z"/></svg></a>` : '';
+            tbl+=`<tr><td class="if-td-name">${r.name}${l}</td><td class="if-icon col-s">${r.vis?'<span class="c-yes">✔</span>':'<span class="c-no">✘</span>'}</td><td class="if-icon bg-sub col-s">${r.sub?'<span class="c-yes">✔</span>':'<span class="c-no">✘</span>'}</td></tr>`;
+        }
+    });
+    tbl+='<tr><td style="font-weight:bold; color:#800000;">KOSTEN</td><td style="text-align:center;">Gratis</td><td style="text-align:center; font-weight:bold; color:#800000; background:#fffbfc;">€49 / jaar</td></tr></tbody></table></div>';
+    if(mode !== 'all') tbl += `<div style="text-align:center; margin-top: 30px;"><a href="https://infofrankrijk.com/abonnement/" class="if-btn" style="display:block; max-width:400px; margin:0 auto; padding: 15px; font-size: 18px;">Word abonnee, meld je aan</a></div>`;
 
-    /* Tabs */
-    .tabs { display: flex; background: #eee; border-bottom: 1px solid #ddd; }
-    .tab { padding: 15px 20px; cursor: pointer; font-weight: bold; border: none; background: none; color: #555; outline: none; transition: 0.2s; border-right: 1px solid #ddd;}
-    .tab.active { background: white; color: #800000; border-top: 4px solid #800000; }
-    .tab:hover:not(.active) { background: #e0e0e0; }
-    .tab-content { padding: 30px; display: none; }
-    .tab-content.active { display: block; animation: fadeIn 0.3s; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+    const css = `<style>.if-onboard{font-family:'Segoe UI',Tahoma,sans-serif;max-width:900px;margin:0 auto;color:#333;line-height:1.5}.if-onboard *{box-sizing:border-box}.if-btn-row{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:30px}.if-btn{flex:1 1 200px;text-align:center;padding:12px 15px;background:#800000;color:white!important;text-decoration:none;border-radius:4px;font-weight:600;font-size:16px;border:1px solid #800000;cursor:pointer;transition:0.2s;font-family:inherit;display:inline-block}.if-btn:hover{background:#600000;transform:translateY(-1px)}.if-btn-gray{background:#555;border-color:#555}.if-btn-gray:hover{background:#333}.if-grid{display:grid!important;grid-template-columns:repeat(auto-fit,minmax(45%,1fr))!important;gap:20px!important;margin-bottom:30px}@media(max-width:650px){.if-grid{grid-template-columns:1fr!important}}.if-card{border:1px solid #eee;border-radius:8px;overflow:hidden;background:white;box-shadow:0 4px 6px rgba(0,0,0,0.05);display:flex;flex-direction:column;height:550px}.if-card-img{height:160px;background-size:cover;background-position:top center;background-color:#f9f9f9;border-bottom:1px solid #eee;flex-shrink:0}.if-card-content{padding:20px;flex-grow:1;display:flex;flex-direction:column;background:rgba(128,0,0,0.04);overflow:hidden}.if-card-content h3{color:#800000;margin:0 0 10px 0;font-size:1.1em;line-height:1.3;font-weight:700;flex-shrink:0}.if-text-scroll{flex-grow:1;overflow-y:auto;padding-right:5px;margin-bottom:15px;font-size:0.95em;color:#555}.if-text-scroll p{margin:0 0 10px 0}.if-text-scroll::-webkit-scrollbar{width:4px}.if-text-scroll::-webkit-scrollbar-track{background:#f1f1f1}.if-text-scroll::-webkit-scrollbar-thumb{background:#800000;border-radius:2px}.if-card-actions{flex-shrink:0;display:flex;justify-content:space-between;align-items:center;border-top:1px solid rgba(0,0,0,0.1);padding-top:15px}.if-btn-mini{text-decoration:none;font-size:0.9em;font-weight:600;padding:6px 12px;border-radius:3px;transition:0.2s}.if-btn-red{background:#800000;color:white!important}.if-btn-red:hover{background:#600000}.if-btn-link{color:#666!important;background:none}.if-btn-link:hover{text-decoration:underline;color:#333!important}.if-tbl-container{max-width:750px;margin:0 auto;overflow-x:auto}.if-tbl{width:100%;border-collapse:collapse;margin-bottom:30px;border:1px solid #eee;font-size:15px}.if-tbl th{background:white;color:#800000;padding:12px 4px;text-align:center;border-bottom:3px solid #800000;font-size:16px;text-transform:uppercase}.if-tbl th.tl{text-align:left;width:auto}.if-tbl th.col-s, .if-tbl td.col-s{min-width:90px;text-align:center;padding:10px 4px}.if-tbl td{padding:12px 4px;border-bottom:1px solid #eee;vertical-align:middle}.if-th{background:#f2f2f2;color:#800000;font-weight:bold;text-transform:uppercase;font-size:14px;letter-spacing:1px;padding:15px!important}.if-icon{text-align:center;font-size:18px}.bg-sub{background-color:#fffbfc}.c-yes{color:#27ae60;font-weight:bold}.c-no{color:#ccc}.if-link-icon svg{width:14px;height:14px;fill:#800000;margin-left:5px;opacity:0.6;vertical-align:middle}.if-h1{color:#800000;font-size:28px;font-weight:700;margin:0 0 10px 0}.if-intro{font-size:18px;color:#555;margin:0 0 25px 0}</style>`;
 
-    /* Forms */
-    .panel { background: #f8f9fa; border: 1px solid #e9ecef; padding: 20px; border-radius: 6px; margin-bottom: 20px; }
-    .form-row { display: flex; gap: 15px; margin-bottom: 15px; flex-wrap: wrap;}
-    .form-group { flex: 1; min-width: 250px; }
-    label { display: block; font-weight: bold; margin-bottom: 5px; font-size: 0.85em; color: #666; text-transform: uppercase; }
-    input[type="text"], textarea, select { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 1em; }
-    textarea { height: 120px; resize: vertical; font-family: 'Segoe UI', sans-serif; }
+    let out = mode === 'all' ? 
+        `<div class="if-onboard"><h1 class="if-h1">Direct toegang nodig?</h1><p class="if-intro">Voor dit instrument is een Infofrankrijk abonnement vereist.</p><div class="if-btn-row"><a href="https://infofrankrijk.com/abonnement/" class="if-btn">Word abonnee, meld je aan</a><a href="https://infofrankrijk.com/aanmelden" class="if-btn">Log in</a></div><div><h2 style="color:#800000; margin-bottom: 20px;">Wat krijg je als abonnee?</h2>${tiles}</div><div><h2 style="color:#800000; margin-top: 30px;">Gratis vs. Abonnee</h2>${tbl}<div style="text-align:center; margin-top: 30px;"><a href="https://infofrankrijk.com/abonnement/" class="if-btn" style="display:block; max-width:400px; margin:0 auto; padding: 15px; font-size: 18px;">Word abonnee, meld je aan</a></div></div></div>` 
+        : `<div class="if-onboard">${mode==='tiles'?tiles:tbl}</div>`;
 
-    /* Editor Toolbar */
-    .editor-toolbar { background: #e9ecef; padding: 5px; border: 1px solid #ccc; border-bottom: none; border-radius: 4px 4px 0 0; display: flex; gap: 5px; }
-    .editor-btn { background: white; border: 1px solid #ccc; padding: 2px 8px; cursor: pointer; font-weight: bold; font-size: 0.9em; border-radius: 3px; }
-    .editor-btn:hover { background: #ddd; }
-    #tileText { border-radius: 0 0 4px 4px; margin-top:0; }
+    document.getElementById('finalCode').value = css + out;
+    document.getElementById('finalCode').select();
+    document.execCommand('copy');
+    showToast("Gekopieerd!");
+}
 
-    /* Buttons */
-    .btn { padding: 10px 18px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; transition: 0.2s; font-size: 0.95em; display: inline-flex; align-items: center; justify-content: center; gap: 5px; text-decoration: none; }
-    .btn-primary { background: #800000; color: white; }
-    .btn-primary:hover { background: #600000; transform: translateY(-1px); }
-    .btn-success { background: #27ae60; color: white; width: 100%; font-size: 1.1em; padding: 15px; }
-    .btn-success:hover { background: #219150; }
-    .btn-danger { background: #fee2e2; color: #c53030; padding: 6px 12px; font-size: 0.85em; }
-    .btn-danger:hover { background: #fecaca; }
-    .btn-action { background: #e2e8f0; color: #4a5568; padding: 6px 10px; }
-    .btn-action:hover { background: #cbd5e0; }
-    
-    .btn-keep { background: #fff; color: #333; border: 2px solid #f1c40f; width: 100%; padding: 15px; margin-bottom: 20px; font-size: 1.1em; transition:0.2s;}
-    .btn-keep:hover { background: #fff9c4; border-color: #f39c12; transform: translateY(-1px); box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+init();
+</script>
 
-    .output-options { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-bottom: 20px; }
-    .btn-opt { padding: 20px; font-size: 1.1em; border: 2px solid transparent; color: white; }
-    .btn-opt:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-    .opt-all { background: #27ae60; }
-    .opt-tiles { background: #2980b9; }
-    .opt-table { background: #e67e22; }
-
-    /* Toast Notification */
-    #toast {
-        visibility: hidden; min-width: 250px; margin-left: -125px; background-color: #333; color: #fff; text-align: center; border-radius: 4px; padding: 16px; position: fixed; z-index: 1000; left: 50%; bottom: 30px; font-size: 17px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-    }
-    #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
-    #toast.success { background-color: #27ae60; }
-    @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} }
-    @keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 0; opacity: 0;} }
-
-    /* Admin Previews */
-    .tile-grid-preview { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 15px; }
-    .tile-card { background: white; border: 1px solid #ddd; border-radius: 6px; overflow: hidden; display: flex; flex-direction: column; position: relative; }
-    .tile-card:hover { border-color: #800000; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-    .edit-hint { position: absolute; top: 5px; right: 5px; background: rgba(255,255,255,0.9); padding: 2px 6px; font-size: 0.7em; border-radius: 3px; border: 1px solid #ccc; pointer-events: none; color: #333;}
-    .tile-img { height: 160px; background-color: #eee; background-size: cover; background-position: top center; border-bottom: 1px solid #eee; }
-    .tile-body { padding: 15px; flex: 1; display: flex; flex-direction: column; background: rgba(128, 0, 0, 0.04); }
-    .tile-title { font-weight: bold; color: #800000; margin-bottom: 5px; font-size: 1.1em; }
-    .tile-text { font-size: 0.95em; color: #555; flex: 1; margin-bottom: 15px; line-height: 1.4; white-space: pre-line; max-height: 100px; overflow-y: auto;}
-
-    .table-preview { width: 100%; border-collapse: collapse; background: white; font-size: 0.9em; }
-    .table-preview th { text-align: left; background: #f1f5f9; padding: 12px; border-bottom: 2px solid #e2e8f0; color: #475569; }
-    .table-preview td { padding: 10px 12px; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
-    .table-header-row td { background: #fff1f2; color: #800000; font-weight: bold; text-transform: uppercase; font-size: 0.85em; letter-spacing: 1px; }
-    .check-yes { color: #27ae60; font-weight: bold; }
-    .check-no { color: #cbd5e0; }
-
-    /* Backup Area Styles */
-    .backup-container { background: #2d3748; padding: 25px; border-radius: 6px; color: white; }
-    .backup-textarea { width: 100%; height: 100px; background: #1a202c; color: #a0aec0; border: 1px solid #4a5568; padding: 10px; font-family: monospace; border-radius: 4px; box-sizing: border-box; margin: 5px 0; }
-    
-    .fail-safe-box {
-        background: #fff3cd; 
-        color: #856404; 
-        border: 2px solid #ffeeba; 
-        padding: 15px; 
-        border-radius: 6px; 
-        margin-bottom: 25px;
-        display: flex;
-        align-items: center;
-        gap: 15px;
-    }
-    .fail-safe-icon { font-size: 2em; }
-</style>
-</head>
-<body>
-
-<div class="container">
-    <header>
-        <h1>Infofrankrijk Funnel Manager</h1>
-        <div class="version">v26 FINAL LIVE</div>
-    </header>
-
-    <div class="tabs">
-        <button class="tab active" onclick="switchTab('backup')">1. START & BACKUP</button>
-        <button class="tab" onclick="switchTab('tiles')">2. De Tegels (Vitrine)</button>
-        <button class="tab" onclick="switchTab('table')">3. De Tabel (Vergelijking)</button>
-        <button class="tab" onclick="switchTab('code')">4. KASSA (Code)</button>
-    </div>
-
-    <div id="tab-backup" class="tab-content active">
-        
-        <div class="fail-safe-box">
-            <div class="fail-safe-icon">⚠️</div>
-            <div>
-                <strong>BELANGRIJK VOOR BEHEERDERS:</strong><br>
-                Heb je wijzigingen gedaan? Sla ze <strong>ALTIJD</strong> op in Google Keep.<br>
-                Als je dit venster sluit zonder op te slaan in Keep, is je werk weg.
-            </div>
-        </div>
-
-        <div class="backup-container">
-            <a href="https://keep.google.com/#NOTE/19zNWkbyH7Ou878ICDUN6DQjTCJzadyE7LvUlsKwnqtnnE7Jwt-31gtf7u0CyZskj" target="_blank" class="btn btn-keep">
-                📝 1. KLIK HIER: Open Google Keep Notitie
-            </a>
-
-            <div style="display:flex; gap: 20px; flex-wrap: wrap;">
-                <div style="flex:1;">
-                    <label style="color:#f1c40f; font-weight:bold;">2. KLAAR? OPSLAAN!</label>
-                    <p style="font-size:0.8em; margin-top:0; color:#ccc;">Kopieer dit blok en plak het in Keep (overschrijf de oude).</p>
-                    <textarea id="exportArea" class="backup-textarea" readonly onclick="this.select()"></textarea>
-                    <button class="btn btn-primary" onclick="copyExport()">Kopieer naar klembord</button>
-                </div>
-                <div style="flex:1;">
-                    <label style="color:#27ae60; font-weight:bold;">3. BEGINNEN? INLADEN!</label>
-                    <p style="font-size:0.8em; margin-top:0; color:#ccc;">Plak hier de code uit Keep om verder te werken.</p>
-                    <textarea id="importArea" class="backup-textarea" placeholder="Plak hier je JSON code..."></textarea>
-                    <button class="btn btn-primary" style="background:#f39c12;" onclick="importData()">Data Inladen</button>
-                </div>
-            </div>
-            
-            <div style="margin-top: 30px; text-align:right; border-top: 1px solid #4a5568; padding-top: 15px;">
-                <button class="btn btn-danger" onclick="resetToDefault()">Noodgeval: Reset naar 'Gouden Master' (v26)</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="tab-tiles" class="tab-content">
-        <div class="panel">
-            <h3>Tegel Bewerken / Toevoegen</h3>
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Titel</label>
-                    <input type="text" id="tileTitle" placeholder="Bijv. Bruto-Netto Calculator">
-                </div>
-                <div class="form-group">
-                    <label>Afbeelding URL</label>
-                    <input type="text" id="tileImg" placeholder="https://infofrankrijk.com/...">
-                </div>
-            </div>
-            <div class="form-group">
-                <label>Tekst (Wervend)</label>
-                <div class="editor-toolbar">
-                    <button class="editor-btn" onclick="formatText('bold')" title="Dikgedrukt">B</button>
-                    <button class="editor-btn" onclick="formatText('italic')" title="Schuingedrukt">I</button>
-                    <button class="editor-btn" onclick="formatText('list')" title="Opsomming">• Lijst</button>
-                </div>
-                <textarea id="tileText" placeholder="Beschrijf de tool... Gebruik Enter voor nieuwe regels."></textarea>
-            </div>
-            <button class="btn btn-primary" onclick="addTile()">+ Opslaan / Toevoegen</button>
-        </div>
-        <div id="tileList" class="tile-grid-preview"></div>
-    </div>
-
-    <div id="tab-table" class="tab-content">
-        <div class="panel">
-            <h3>Regel Toevoegen</h3>
-            <div class="form-row">
-                <div class="form-group" style="flex: 0 0 150px;">
-                    <label>Type</label>
-                    <select id="rowType">
-                        <option value="item">Dienst / Tool</option>
-                        <option value="header">Tussenkop</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Naam / Omschrijving</label>
-                    <input type="text" id="rowName" placeholder="Omschrijving van de dienst">
-                </div>
-                <div class="form-group">
-                    <label>Link URL (Optioneel)</label>
-                    <input type="text" id="rowLink" placeholder="https://...">
-                </div>
-            </div>
-            <div style="margin-bottom: 15px;">
-                <label style="display:inline-block; margin-right: 20px; cursor:pointer;">
-                    <input type="checkbox" id="visCheck"> Toegankelijk voor Bezoeker?
-                </label>
-                <label style="display:inline-block; cursor:pointer;">
-                    <input type="checkbox" id="subCheck" checked> Toegankelijk voor Abonnee?
-                </label>
-            </div>
-            <button class="btn btn-primary" onclick="addTableRow()">+ Toevoegen aan Tabel</button>
-        </div>
-        <table class="table-preview">
-            <thead><tr><th>Item</th><th width="50" style="text-align:center">Bez</th><th width="50" style="text-align:center">Abo</th><th width="120" style="text-align:center">Actie</th></tr></thead>
-            <tbody id="tableList"></tbody>
-        </table>
-    </div>
-
-    <div id="tab-code" class="tab-content">
-        <div style="text-align:center; max-width: 800px; margin: 0 auto;">
-            <h2 style="color:#333; margin-bottom: 20px;">Wat wil je publiceren?</h2>
-            
-            <div class="output-options">
-                <button class="btn btn-opt opt-all" onclick="generateCode('all')">
-                    <strong>📦 ALLES (Direct zichtbaar)</strong><br>
-                    <span style="font-size:0.8em; opacity:0.8">Tegels + Tabel</span>
-                </button>
-                
-                <button class="btn btn-opt opt-tiles" onclick="generateCode('tiles')">
-                    <strong>🖼️ ALLEEN TEGELS</strong><br>
-                    <span style="font-size:0.8em; opacity:0.8">Het grid met plaatjes</span>
-                </button>
-                
-                <button class="btn btn-opt opt-table" onclick="generateCode('table')">
-                    <strong>📊 ALLEEN TABEL</strong><br>
-                    <span style="font-size:0.8em; opacity:0.8">De vergelijking</span>
-                </button>
-            </div>
-
-            <p style="color:#666; margin-bottom: 10px; font-style:italic;">Update v26: Tabel kolommen verbreed (90px) voor nette prijzen op mobiel.</p>
-        </div>
-        <textarea id="finalCode" style="width:100%; height:300px; margin-top:10px; border:1px solid #ddd; padding:15px; font-family:monospace; color:#555;" readonly onclick="this.select()"></textarea>
-    </div>
-</div>
-
-<div id="toast">Melding</div>
-
-<script>
-/* ======================================================
-   FAIL-SAFE DEFAULT DATA (V26 - CLEAN LINKS & TABLE FIX)
-   ====================================================== */
-const defaultData = {"tiles":[{"title":"Beroepseisen checker","img":"https://infofrankrijk.com/wp-content/uploads/2025/12/beroepengids-scaled.png","text":"We hebben inmiddels meer dan 60 beroepen en ondernemersactiviteiten in dit handige overzicht geplaatst. In één enkel instrument vind je: \n\n• alle beroepseisen, \n\n• benodigde diploma's, \n\n• bij welke \"Chambre\" aanmelden \n\n• zelfs een prognose van inkomstenpotentieel. \n\nDe basis is een dynamische koppeling met de Franse overheid waardoor deze tool altijd up to date is. In 2026 zullen we de checker uitbreiden met meer beroepen en sectoren voor ondernemers. "},{"title":"Contrôle Technique | APK","img":"https://infofrankrijk.com/wp-content/uploads/2025/12/apk-keuring-poctcoe-scaled.png","text":"<b>Voer je postcode in Frankrijk in en:</b>\n\n• Zie direct waar je de Contrôle Technique uit kunt laten voeren. \n• Met een prijsvergelijker. \n\nVanaf 2026 voegen we actuele benzineprijs- en tankstationdata toe aan deze bestaande APK-keuringsstations-tool, zodat u met één klik het goedkoopste station in uw departement kunt vinden."},{"title":"Kosten van de vastgoedtransactie","img":"https://infofrankrijk.com/wp-content/uploads/2025/12/transactiekosten-vastgoed.png","text":"<b>Deze slimme simulator berekent de totale kosten van een vastgoedtransactie:</b>\n\n• de notariskosten, \n• de eventuele makelaarskosten\nen de facultative kosten zoals:\n\n• de mainlevée d'hypothèque, \n• SPANC-assainissement, \n• de géomètre \n• en de hypotheekgarantie (caution). \n\nDeze totale kosten voor zowel de verkoper als de koper <b>kunnen</b> fors oplopen. Zeker als het een tweede woning is en het huis wordt binnen - zeg - tien jaar weer verkocht. "},{"title":"Calculator voor energiekosten","img":"https://infofrankrijk.com/wp-content/uploads/2025/12/energiecalculator-scaled.png","text":"Praktische scenariocalculator met geïntegreerde berekeningen voor isolatie, ventilatie, verwarmingssystemen,\nzonnepanelen, zwembad en Franse klimaatzones.\n\n<b>Unieke waardepropositie</b>\n\n• Combineert fysisch onderbouwde transmissie- en ventilatieverliezen met rendementsscenario’s (SCOP/COP), bijverwarming en zwembadgebruik. \n• Energietarieven zijn volledig door u instelbaar – geen theoretische aannames, maar praktische vergelijkingen in kWh en kosten.\n• Live-feeds & bronintegriteit.\n\n<b>Rekendefaults updaten periodiek via open-data-synchronisatie:</b>\n\n• Zonne-instraling per Franse klimaatzone, realistische SCOP-ranges voor gangbare warmtepompsystemen en zwembadseizoen- & verliesparameters (incl. afdekking en windfactoren), gebaseerd op publieke normlogica zoals EN-ISO-warmteoverdracht en graaddagen-principes.\n• Vergelijk hoofd- vs. bijverwarming op jaarbasis (kWh / L / kg / €), incl. COP-dip bij vorst.\n• Automatische PV-verrekening met 70% eigen verbruik als transparant startpunt.\n• Zwembadscenario’s met afdekking- & windfactoren (WP, gas of elektra).\n• Hoge nauwkeurigheid met echte invoer: U-waarden, ACH, volume, SCOP, energietarieven.\n\nDoelgroep: woningeigenaren in Frankrijk die installaties, renovatieprioriteit en terugverdientijd nuchter willen doorrekenen vóór offertes en systeemkeuzes."},{"title":"Plus Value Calculator","img":"https://infofrankrijk.com/wp-content/uploads/2025/12/plusvalue-calculator.png","text":"Bereken Franse vastgoedwinstbelasting (Plus-Value Immobilière) snel en exact.\nInclusief afschrijvingsvoordeel, forfait-opties en uitsplitsing per jaartal.\n\n<b>Direct PDF-export voor uw dossier.</b>"},{"title":"Klus- en forum-archief","img":"https://infofrankrijk.com/wp-content/uploads/2025/12/klussen-in-frankrijk.png","text":"<b>Het hele klusforum van Infofrankrijk in één scherm? </b>\nJa hoor, het kan wel. Meer dan 12 jaar aan zeer uitgebreide en deskundige bijdragen van de forumdeelnemers van Infofrankrijk worden hier inzichtelijk gemaakt. \n\nDeze module is trouwens <b>gratis</b>, ook als je geen abonnee bent kun je hier gebruik van maken. \n\nVerder gaan we in 2026 de inhoud van de rubriek <b>\"Klussen in Frankrijk\"</b> nog completer maken en zoveel mogelijk in haar oude fantastische staat herstellen.   "},{"title":"Internet vindmodule","img":"https://infofrankrijk.com/wp-content/uploads/2025/12/internetfinder-scaled.png","text":"<b>Korte, beschrijving van de tool:</b>\n\n• Dit is een interactieve adres-checker die in twee stappen toont of glasvezel of DSL op uw locatie beschikbaar is.\n• Directe doorlinks naar de belangrijkste Franse glasvezel-providers en aanvullende diensten voor Orange Fibre, SFR Fibre, Bouygues Fibre en Free Fibre.\n• Praktische extra tips (linkjes) voor Nederlandse NLZIET, Canal Digitaal, en VPN-bescherming via NordVPN en Surfshark.\n"},{"title":"Bruto naar netto in FR | BE | NL","img":"https://infofrankrijk.com/wp-content/uploads/2025/12/bruto-netto-calculator-scaled.png","text":"<b>Inkomensanalyse: bruto/netto simulator.</b>\n\nVergelijk je netto-inkomsten in Frankrijk met Nederland of België.\n\nHet Franse belastingsysteem verschilt in menig opzicht van wat u gewend bent. Deze vergelijkingstool biedt een eerste oriëntatie op uw netto inkomen na emigratie.\n\n<b>Wat levert het op?</b>\n\n• De tool berekent een globale indicatie van uw netto inkomen in Frankrijk versus uw thuisland. U krijgt inzicht in de belangrijkste verschillen: sociale premies, belastingschijven en het Franse gezinsquotiënt.\n• Dit is geen exacte berekening maar een degelijke basis voor verdere planning. Met deze eerste inschatting kunt u gerichter in gesprek met uw accountant of belastingadviseur.\n\n<b>Voor wie?</b>\nNederlanders en Belgen die overwegen in Frankrijk te gaan werken of ondernemen. De tool houdt rekening met gezinssituatie en geeft een realistisch beeld van de financiële consequenties van emigratie."},{"title":"Nieuwsbrief en videocalls","img":"https://infofrankrijk.com/wp-content/uploads/2025/12/nieuwsbrief.png","text":"<b>Ben je abonnee? </b>\n\n• Dan krijg je automatisch onze nieuwsbrief met updates en aankondigingen van nieuwe tools. \n• Iedere 2 à 3 maanden brengen we je op de hoogte van de laatste ontwikkelingen. \n• Neem deel aan de videoconferenties om je wensen kenbaar te maken. "},{"title":"Handige assistent Franse taal","img":"https://infofrankrijk.com/wp-content/uploads/2025/12/taalassistent-scaled.png","text":"<b>DIT IS GEEN CURSUS!</b>\n\nHet is een <b>VERTALER/TOLK</b> die je altijd bij je hebt. Een tool waarmee je per situatie (scenario) een vocabulaire en voorbeeldzinnen krijgt aangereikt die je helpen om de juiste dingen te zeggen. En, we hebben deze tool zo gemaakt dat je deze makkelijk op je telefoon kunt zetten. \n\n<b>Op dit moment zijn er 14 hoofdscenario's:</b>\n\n1. <b>SHOPPING</b>: met meer dan 10 WINKELSOORTEN van 'Boucherie' tot 'Traiteur'\n2. <b>TELEFOON</b>: 9 situaties zoals bellen, opnemen, nummer (ook je eigen nummer) uitspreken enz.\n3. <b>FINANCIEEL</b>: bank & betalen, rekening openen, RIB, incasso’s, limieten, kaart/contactloos enz. \n4. <b>HUISHOUDEN</b>: van ongediertebestrijding tot zwembad, bedenk het maar...\n5. <b>LA MAIRIE</b>: met 4 situaties die je daar kunt tegenkomen\n6. <b>GEZONDHEIDSZORG</b>: van huisarts tot apotheek \n\n...  en zo verder tot <b>14</b> hoofdscenario's en - per scenario- een veelvoud aan de vocabulaire en voorbeeldzinnen die handig van pas kunnen komen. En natuurlijk gaan we de taalassistent verder uitbouwen in 2026, kom maar op met je wensen en ideeën!"},{"title":"Officiële instellingen / postcode (75005)","img":"https://infofrankrijk.com/wp-content/uploads/2025/12/dasboard-admin.png","text":"<b>Vind direct lokale Franse overheidsdiensten. </b>\n\n• VOER JE FRANSE POSTCODE IN.\n• CONTACTGEVENS VAN DE MEESTE ADMINISTRATIEVE DIENSTEN:\n\n<i>[ CAF - CPAM - PRÉFECTUUR - MAIRIE - URRSAF - DGFIP - DDT/DDTM - POLICE/COMMISSARIAT - GENDARMERIE - HÔPITAL - PÔLE EMPLOI - TRÉSORERIE - FRANCE SERVICE ]</i>\n\n<b>Bij jou in de buurt natuurlijk !</b>"},{"title":"Uw testament en erfrecht in Frankrijk","img":"https://infofrankrijk.com/wp-content/uploads/2025/12/erfrecht-testament-fr2.png","text":"<b>Uw Franse erfenis of testament regelen?</b>\n\nHet regelen van een erfenis of testament in Frankrijk roept bij veel Nederlanders en Belgen vragen op. Geldt het Franse of Nederlandse recht? Hoe voorkomt u dubbele erfbelasting? En wat zijn de valkuilen voor samengestelde gezinnen?\n\nGebruik deze interactieve gids om direct te zien welke regels voor uw situatie gelden. Deze tool bundelt, in 7 tabbladen, de officiële informatie van de Europese Unie, de Franse overheid en juridische experts."},{"title":"Officiële instellingen / postcode (75005)","img":"https://infofrankrijk.com/wp-content/uploads/2025/12/dasboard-admin.png","text":"<b>Vind direct lokale Franse overheidsdiensten. </b>\n\n• VOER JE FRANSE POSTCODE IN.\n• CONTACTGEVENS VAN DE MEESTE ADMINISTRATIEVE DIENSTEN:\n\n<i>[ CAF - CPAM - PRÉFECTUUR - MAIRIE - URRSAF - DGFIP - DDT/DDTM - POLICE/COMMISSARIAT - GENDARMERIE - HÔPITAL - PÔLE EMPLOI - TRÉSORERIE - FRANCE SERVICE ]</i>\n\n<b>Bij jou in de buurt natuurlijk !</b>"},{"title":"Vind het juiste 'loket' voor jouw onderneming","img":"https://infofrankrijk.com/wp-content/uploads/2025/12/lokettenvinder-scaled.png","text":"Met deze tool zoekt u per postcode en activiteit de lokale instanties die verantwoordelijk zijn voor uw registratie. Controleer eerst het overzicht van 61 gereguleerde beroepen om te zien welke sectoren en verplichtingen van toepassing zijn op uw activiteit."},{"title":"Plus Value Calculator","img":"https://infofrankrijk.com/wp-content/uploads/2025/12/plusvalue-calculator.png","text":"Bereken Franse vastgoedwinstbelasting (Plus-Value Immobilière) snel en exact.\nInclusief afschrijvingsvoordeel, forfait-opties en uitsplitsing per jaartal.\n\n<b>Direct PDF-export voor uw dossier.</b>"},{"title":"Zorgkompas","img":"https://infofrankrijk.com/wp-content/uploads/2025/12/zorgkompas-scaled.png","text":"<b>Het Zorgkompas Frankrijk is een educatieve simulator.</b>\nDeze geeft inzicht in de kostenstroom van medische handelingen. De tool visualiseert direct wie wat betaalt: \n\n• de basisverzekering (Ameli/Sécu), \n• uw aanvullende verzekering (Mutuelle) en \n• uw eigen bijdrage."},{"title":"Meer instrumenten in de maak...","img":"https://infofrankrijk.com/wp-content/uploads/2025/12/tools-2026-en-daarna-scaled.png","text":"<b>Onze commitment voor de toekomst: </b>\n\nIn de komende maanden breiden we ons platform gericht uit met meer slimme tools en verdere verfijning van bestaande instrumenten. De tools die nu beschikbaar zijn, bevinden zich bewust in bèta: functioneel, maar in ontwikkeling. We horen graag hoe jij ze ervaart. \n\n<b>Concreet werken we onder meer aan:</b>\n\n• Een persoonlijk, privé dashboard waarin al jouw opgebouwde dossiers worden bewaard (lokaal in de browser).\n• Een vastgoed-analysetool die advertenties snel vertaalt naar kansen, valkuilen en relevante omgevingsfactoren.\n• Maatwerkdossiers afgestemd op jouw persoonlijke situatie en verblijf in Frankrijk.\n\nDeze tools worden waar mogelijk gevoed door slimme live-koppelingen (API’s) met betrouwbare bronnen van de Franse overheid en officiële instellingen, zodat informatie actueel, verifieerbaar en praktisch toepasbaar blijft. \n\nEn dit is pas het begin. Nieuwe functionaliteiten worden stapsgewijs toegevoegd en doorlopend aangescherpt op basis van praktijkgebruik."}],"table":[{"type":"header","name":"Algemeen"},{"type":"item","name":"Infofrankrijk; de basis (vele artikelen)","vis":true,"sub":true},{"type":"item","name":"Dagelijkse nieuwsbrief (gerenoveerd in 2026!)","link":"https://infofrankrijk.com/nieuwsbrief/","vis":true,"sub":true},{"type":"item","name":"Het forum van Nederlanders.fr blijft gratis","vis":true,"sub":true},{"type":"header","name":"DOSSIERS"},{"type":"item","name":"Ondernemen in Frankrijk","vis":true,"sub":true},{"type":"item","name":"Vastgoedbezit in Frankrijk","vis":true,"sub":true},{"type":"item","name":"85 PDF bestanden uit 'Klussen in Frankrijk'","link":"https://infofrankrijk.com/2025/08/26/klussen/","vis":true,"sub":true},{"type":"item","name":"De gratis Klussen in Frankrijk Module","link":"https://infofrankrijk.com/2025/11/30/uit-het-klusforum-van-infofrankrijk-com/","vis":true,"sub":true},{"type":"item","name":"Dossiers worden voortdurend geactualiseerd","link":"","vis":true,"sub":true},{"type":"header","name":"Bij u in de buurt"},{"type":"item","name":"Internet beschikbaarheid","link":"https://infofrankrijk.com/2025/11/12/internet/","vis":true,"sub":true},{"type":"item","name":"Overheden en instellingen","link":"https://infofrankrijk.com/2025/11/14/overheden/","vis":true,"sub":true},{"type":"item","name":"Contrôle Technique | APK - Postcode","link":"https://infofrankrijk.com/2025/11/26/de-controle-technique-de-franse-apk/","vis":true,"sub":true},{"type":"item","name":"Internet bij jouw huis in Frankrijk","link":"https://infofrankrijk.com/2025/11/12/internetverbinding-in-frankrijk/","vis":true,"sub":true},{"type":"header","name":"SIMULATIE- EN REKENMODULES"},{"type":"item","name":"Periodieke nieuwsbrief & nieuwe tools","vis":false,"sub":true},{"type":"item","name":"Zorgkompas Frankrijk: simulator","link":"https://infofrankrijk.com/2025/11/21/zorgkompas/","vis":false,"sub":true},{"type":"item","name":"Bruto-Netto simulator NL <> FR","link":"https://infofrankrijk.com/2025/11/10/financieel/","vis":false,"sub":true},{"type":"item","name":"Simulati
+</body>
+</html>
