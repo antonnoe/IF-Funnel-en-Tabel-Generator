@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Infofrankrijk Funnel Manager v31</title>
+<title>Infofrankrijk Funnel Manager v32</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
@@ -388,6 +388,35 @@
     .c-yes { color: var(--success); font-weight: bold; }
     .c-no { color: #ccc; }
     
+    /* Teaser indicator */
+    .teaser-badge {
+        display: inline-block;
+        background: #e67e22;
+        color: white;
+        font-size: 0.7em;
+        padding: 2px 6px;
+        border-radius: 3px;
+        margin-left: 8px;
+        vertical-align: middle;
+        font-family: 'Poppins', sans-serif;
+    }
+    
+    /* Teaser fields styling */
+    .teaser-fields {
+        background: #fff8e1;
+        border: 1px solid #ffe082;
+        border-radius: 6px;
+        padding: 15px;
+        margin-top: 15px;
+    }
+    .teaser-fields-title {
+        font-family: 'Poppins', sans-serif;
+        font-size: 0.9em;
+        color: #e67e22;
+        margin: 0 0 10px 0;
+        font-weight: 600;
+    }
+    
     /* Toast */
     #toast { 
         visibility: hidden; 
@@ -423,7 +452,7 @@
     <header>
         <h1>Infofrankrijk Funnel Manager</h1>
         <div class="header-right">
-            <div class="version">v31</div>
+            <div class="version">v32</div>
         </div>
     </header>
 
@@ -547,19 +576,40 @@
                     <label>Naam</label>
                     <input type="text" id="rowName" placeholder="Naam van het item">
                 </div>
-                <div class="form-group">
+                <div class="form-group" id="linkGroup">
                     <label>Link (optioneel)</label>
                     <input type="text" id="rowLink" placeholder="https://...">
                 </div>
             </div>
             <div style="display:flex; gap:20px; align-items:center; flex-wrap:wrap;">
                 <label style="display:flex; align-items:center; gap:5px; margin:0;">
-                    <input type="checkbox" id="visCheck"> Bezoekers
+                    <input type="checkbox" id="visCheck" onchange="toggleTeaserFields()"> Bezoekers
                 </label>
                 <label style="display:flex; align-items:center; gap:5px; margin:0;">
-                    <input type="checkbox" id="subCheck" checked> Abonnees
+                    <input type="checkbox" id="subCheck" checked onchange="toggleTeaserFields()"> Abonnees
                 </label>
             </div>
+            
+            <!-- Teaser velden (alleen zichtbaar bij sub=true, vis=false) -->
+            <div id="teaserFields" class="teaser-fields" style="display:none;">
+                <div class="teaser-fields-title">🎬 Teaser Modal (voor abonnee-only items)</div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Teaser Tekst</label>
+                        <textarea id="rowTeaser" placeholder="Korte beschrijving wat dit instrument doet..." style="height:80px;"></textarea>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>YouTube URL</label>
+                        <input type="text" id="rowYoutube" placeholder="https://www.youtube.com/watch?v=... of https://youtu.be/...">
+                    </div>
+                </div>
+                <p style="font-size:0.85em; color:#666; margin:10px 0 0 0;">
+                    💡 Bij klik op deze rij opent een modal met teaser + video + "Word abonnee" knop.
+                </p>
+            </div>
+            
             <div style="display:flex; gap:10px; margin-top:15px;">
                 <button id="btnTableAdd" class="btn btn-primary" onclick="addTableRow()">+ Toevoegen</button>
                 <button id="btnTableUpdate" class="btn btn-update" onclick="updateTableRow()">💾 Opslaan</button>
@@ -602,7 +652,7 @@
 /* ========================================
    DATA & STATE
 ======================================== */
-const STORAGE_KEY = 'if_v31_data';
+const STORAGE_KEY = 'if_v32_data';
 let appData = { tiles: [], table: [] };
 let dataLoaded = false;
 let hasChanges = false;
@@ -625,6 +675,7 @@ function init() {
     renderTable();
     updateExportArea();
     updateStatus();
+    toggleTeaserFields();
     
     // Waarschuw bij verlaten met onopgeslagen wijzigingen
     window.addEventListener('beforeunload', (e) => {
@@ -668,6 +719,25 @@ function switchTab(id) {
     document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
     document.getElementById('tab-' + id).classList.add('active');
     event.target.classList.add('active');
+}
+
+/* ========================================
+   TEASER FIELDS TOGGLE
+======================================== */
+function toggleTeaserFields() {
+    const vis = document.getElementById('visCheck').checked;
+    const sub = document.getElementById('subCheck').checked;
+    const teaserFields = document.getElementById('teaserFields');
+    const linkGroup = document.getElementById('linkGroup');
+    
+    // Teaser velden alleen tonen bij: sub=true EN vis=false (abonnee-only items)
+    if (sub && !vis) {
+        teaserFields.style.display = 'block';
+        linkGroup.style.display = 'none'; // Link niet relevant voor abonnee-only
+    } else {
+        teaserFields.style.display = 'none';
+        linkGroup.style.display = 'block';
+    }
 }
 
 /* ========================================
@@ -864,6 +934,10 @@ function editRow(idx) {
     document.getElementById('rowLink').value = row.link || '';
     document.getElementById('visCheck').checked = row.vis;
     document.getElementById('subCheck').checked = row.sub;
+    document.getElementById('rowTeaser').value = row.teaser || '';
+    document.getElementById('rowYoutube').value = row.youtube || '';
+    
+    toggleTeaserFields();
     
     document.getElementById('tablePanelTitle').textContent = '✏️ Rij Bewerken';
     document.getElementById('btnTableAdd').style.display = 'none';
@@ -895,13 +969,24 @@ function cancelTableEdit() {
 }
 
 function getTableFormData() {
-    return {
+    const vis = document.getElementById('visCheck').checked;
+    const sub = document.getElementById('subCheck').checked;
+    
+    const data = {
         type: document.getElementById('rowType').value,
         name: document.getElementById('rowName').value.trim(),
         link: document.getElementById('rowLink').value.trim(),
-        vis: document.getElementById('visCheck').checked,
-        sub: document.getElementById('subCheck').checked
+        vis: vis,
+        sub: sub
     };
+    
+    // Teaser data alleen opslaan bij abonnee-only items
+    if (sub && !vis) {
+        data.teaser = document.getElementById('rowTeaser').value.trim();
+        data.youtube = document.getElementById('rowYoutube').value.trim();
+    }
+    
+    return data;
 }
 
 function clearTableForm() {
@@ -910,6 +995,9 @@ function clearTableForm() {
     document.getElementById('rowLink').value = '';
     document.getElementById('visCheck').checked = false;
     document.getElementById('subCheck').checked = true;
+    document.getElementById('rowTeaser').value = '';
+    document.getElementById('rowYoutube').value = '';
+    toggleTeaserFields();
 }
 
 function deleteRow(idx) {
@@ -941,10 +1029,15 @@ function renderTable() {
             </tr>`;
         }
         
-        const linkIcon = r.link ? ` <a href="${r.link}" target="_blank" style="color:var(--primary);">🔗</a>` : '';
+        // Check of dit een abonnee-only item is met teaser
+        const isSubOnly = r.sub && !r.vis;
+        const hasTeaser = isSubOnly && (r.teaser || r.youtube);
+        const teaserBadge = hasTeaser ? '<span class="teaser-badge">TEASER</span>' : '';
+        
+        const linkIcon = r.link && !isSubOnly ? ` <a href="${r.link}" target="_blank" style="color:var(--primary);">🔗</a>` : '';
         
         return `<tr class="${editingTableIndex === i ? 'editing-row' : ''}">
-            <td>${r.name}${linkIcon}</td>
+            <td>${r.name}${linkIcon}${teaserBadge}</td>
             <td class="cell-icon">${r.vis ? '<span class="c-yes">✔</span>' : '<span class="c-no">✘</span>'}</td>
             <td class="cell-icon">${r.sub ? '<span class="c-yes">✔</span>' : '<span class="c-no">✘</span>'}</td>
             <td class="cell-actions">
@@ -956,9 +1049,32 @@ function renderTable() {
 }
 
 /* ========================================
+   YOUTUBE HELPERS
+======================================== */
+function extractYoutubeId(url) {
+    if (!url) return null;
+    
+    // Handle various YouTube URL formats
+    const patterns = [
+        /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\?\/]+)/,
+        /^([a-zA-Z0-9_-]{11})$/ // Direct video ID
+    ];
+    
+    for (const pattern of patterns) {
+        const match = url.match(pattern);
+        if (match) return match[1];
+    }
+    
+    return null;
+}
+
+/* ========================================
    CODE GENERATOR
 ======================================== */
 function generateCode(mode) {
+    // Check if there are any teaser items
+    const hasTeaserItems = appData.table.some(r => r.type !== 'header' && r.sub && !r.vis && (r.teaser || r.youtube));
+    
     const css = `<style>
 @import url('https://fonts.googleapis.com/css2?family=Mulish:wght@400;700&family=Poppins:wght@600;700&display=swap');
 .if-onboard{font-family:'Mulish',sans-serif;max-width:1100px;margin:0 auto;color:#333;line-height:1.8}
@@ -998,6 +1114,26 @@ function generateCode(mode) {
 .if-link-icon svg{width:14px;height:14px;fill:#800000;margin-left:5px;opacity:0.6;vertical-align:middle}
 .if-h1{color:#800000;font-size:28px;font-weight:700;margin:0 0 10px 0;font-family:'Poppins',sans-serif}
 .if-intro{font-size:18px;color:#555;margin:0 0 25px 0;line-height:1.8}
+/* Teaser row styling */
+.if-row-teaser{cursor:pointer;transition:background 0.2s}
+.if-row-teaser:hover{background:#fff5f5!important}
+.if-row-teaser td:first-child{position:relative;padding-left:28px}
+.if-row-teaser td:first-child::before{content:"▶";position:absolute;left:10px;color:#800000;font-size:10px;opacity:0.6}
+/* Modal styling */
+.if-modal-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);z-index:9999;justify-content:center;align-items:center;padding:20px;box-sizing:border-box}
+.if-modal-overlay.active{display:flex}
+.if-modal{background:white;border-radius:12px;max-width:700px;width:100%;max-height:90vh;overflow-y:auto;position:relative;box-shadow:0 20px 60px rgba(0,0,0,0.3)}
+.if-modal-close{position:absolute;top:15px;right:15px;background:#f5f5f5;border:none;width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:20px;color:#666;z-index:10;transition:0.2s}
+.if-modal-close:hover{background:#800000;color:white}
+.if-modal-header{background:linear-gradient(135deg,#800000 0%,#a00000 100%);color:white;padding:30px;text-align:center}
+.if-modal-header h3{margin:0;font-size:1.5em;font-family:'Poppins',sans-serif;font-weight:700}
+.if-modal-body{padding:30px}
+.if-modal-teaser{font-size:1.1em;color:#555;line-height:1.8;margin-bottom:25px}
+.if-modal-video{position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:8px;margin-bottom:25px;background:#000}
+.if-modal-video iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:0}
+.if-modal-cta{text-align:center;padding:20px;background:rgba(128,0,0,0.05);border-radius:8px}
+.if-modal-cta p{margin:0 0 15px 0;color:#666;font-size:0.95em}
+.if-modal-cta .if-btn{display:inline-block;padding:15px 40px;font-size:1.1em}
 </style>`;
 
     let tiles = '<div class="if-grid">';
@@ -1016,6 +1152,7 @@ function generateCode(mode) {
     });
     tiles += '</div>';
 
+    // Build table with teaser support
     let tbl = `<div class="if-tbl-container">
 <table class="if-tbl">
 <thead>
@@ -1027,16 +1164,41 @@ function generateCode(mode) {
 </thead>
 <tbody>`;
 
-    appData.table.forEach(r => {
+    // Collect teaser items for modal data
+    const teaserItems = [];
+    
+    appData.table.forEach((r, idx) => {
         if (r.type === 'header') {
             tbl += `<tr><td colspan="3" class="if-th">${r.name}</td></tr>`;
         } else {
-            const linkHtml = r.link ? `<a href="${r.link}" target="_blank" class="if-link-icon"><svg viewBox="0 0 24 24"><path d="M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3m-2 16H5V5h7V3H5c-1.11 0-2 .89-2 2v14c0 1.11.89 2 2 2h14c1.11 0 2-.89 2-2v-7h-2v7z"/></svg></a>` : '';
-            tbl += `<tr>
+            const isSubOnly = r.sub && !r.vis;
+            const hasTeaser = isSubOnly && (r.teaser || r.youtube);
+            
+            if (hasTeaser) {
+                // Store teaser data
+                teaserItems.push({
+                    id: `teaser-${idx}`,
+                    name: r.name,
+                    teaser: r.teaser || '',
+                    youtube: r.youtube || '',
+                    youtubeId: extractYoutubeId(r.youtube)
+                });
+                
+                // Clickable teaser row
+                tbl += `<tr class="if-row-teaser" onclick="ifOpenModal('teaser-${idx}')">
+<td>${r.name}</td>
+<td class="if-icon"><span class="c-no">✘</span></td>
+<td class="if-icon bg-sub"><span class="c-yes">✔</span></td>
+</tr>`;
+            } else {
+                // Regular row
+                const linkHtml = r.link ? `<a href="${r.link}" target="_blank" class="if-link-icon"><svg viewBox="0 0 24 24"><path d="M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3m-2 16H5V5h7V3H5c-1.11 0-2 .89-2 2v14c0 1.11.89 2 2 2h14c1.11 0 2-.89 2-2v-7h-2v7z"/></svg></a>` : '';
+                tbl += `<tr>
 <td>${r.name}${linkHtml}</td>
 <td class="if-icon">${r.vis ? '<span class="c-yes">✔</span>' : '<span class="c-no">✘</span>'}</td>
 <td class="if-icon bg-sub">${r.sub ? '<span class="c-yes">✔</span>' : '<span class="c-no">✘</span>'}</td>
 </tr>`;
+            }
         }
     });
 
@@ -1048,6 +1210,79 @@ function generateCode(mode) {
 </tbody>
 </table>
 </div>`;
+
+    // Generate modal HTML and JavaScript if there are teaser items
+    let modalHtml = '';
+    let modalScript = '';
+    
+    if (teaserItems.length > 0) {
+        modalHtml = `
+<!-- Teaser Modal -->
+<div class="if-modal-overlay" id="ifModalOverlay" onclick="ifCloseModal(event)">
+<div class="if-modal" onclick="event.stopPropagation()">
+<button class="if-modal-close" onclick="ifCloseModal()">&times;</button>
+<div class="if-modal-header">
+<h3 id="ifModalTitle">Titel</h3>
+</div>
+<div class="if-modal-body">
+<p class="if-modal-teaser" id="ifModalTeaser">Beschrijving</p>
+<div class="if-modal-video" id="ifModalVideo" style="display:none;">
+<iframe id="ifModalIframe" src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
+<div class="if-modal-cta">
+<p>Dit instrument is beschikbaar voor Infofrankrijk abonnees.</p>
+<a href="https://infofrankrijk.com/abonnement/" class="if-btn" target="_blank">Word abonnee</a>
+</div>
+</div>
+</div>
+</div>`;
+
+        // Generate teaser data as JSON
+        const teaserDataJson = JSON.stringify(teaserItems.reduce((acc, item) => {
+            acc[item.id] = item;
+            return acc;
+        }, {}));
+
+        modalScript = `
+<script>
+(function(){
+var ifTeaserData = ${teaserDataJson};
+
+window.ifOpenModal = function(id) {
+var item = ifTeaserData[id];
+if (!item) return;
+
+document.getElementById('ifModalTitle').textContent = item.name;
+document.getElementById('ifModalTeaser').textContent = item.teaser || '';
+
+var videoContainer = document.getElementById('ifModalVideo');
+var iframe = document.getElementById('ifModalIframe');
+
+if (item.youtubeId) {
+iframe.src = 'https://www.youtube.com/embed/' + item.youtubeId + '?rel=0';
+videoContainer.style.display = 'block';
+} else {
+iframe.src = '';
+videoContainer.style.display = 'none';
+}
+
+document.getElementById('ifModalOverlay').classList.add('active');
+document.body.style.overflow = 'hidden';
+};
+
+window.ifCloseModal = function(e) {
+if (e && e.target !== e.currentTarget) return;
+document.getElementById('ifModalOverlay').classList.remove('active');
+document.getElementById('ifModalIframe').src = '';
+document.body.style.overflow = '';
+};
+
+document.addEventListener('keydown', function(e) {
+if (e.key === 'Escape') ifCloseModal();
+});
+})();
+<\/script>`;
+    }
 
     const ctaButton = `<div style="text-align:center;margin-top:30px;">
 <a href="https://infofrankrijk.com/abonnement/" class="if-btn" style="display:block;max-width:400px;margin:0 auto;padding:15px;font-size:18px;">Word abonnee, meld je aan</a>
@@ -1068,14 +1303,15 @@ ${tiles}
 <h2 style="color:#800000;margin-top:30px;font-family:'Poppins',sans-serif;">Gratis vs. Abonnee</h2>
 ${tbl}
 ${ctaButton}
+${modalHtml}
 </div>`;
     } else if (mode === 'tiles') {
         output = `<div class="if-onboard">${tiles}</div>`;
     } else {
-        output = `<div class="if-onboard">${tbl}${ctaButton}</div>`;
+        output = `<div class="if-onboard">${tbl}${ctaButton}${modalHtml}</div>`;
     }
 
-    const finalCode = css + '\n' + output;
+    const finalCode = css + '\n' + output + (hasTeaserItems && mode !== 'tiles' ? modalScript : '');
     document.getElementById('finalCode').value = finalCode;
     document.getElementById('finalCode').select();
     document.execCommand('copy');
