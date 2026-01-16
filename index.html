@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Infofrankrijk Funnel Manager v28 (Edit & Safe-Mode)</title>
+<title>Infofrankrijk Funnel Manager v29 (Scroll Fix)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
@@ -58,18 +58,40 @@
     /* Previews */
     .tile-grid-preview { 
         display: grid; 
-        grid-template-columns: repeat(3, 1fr); /* Forceer 3 kolommen */
+        grid-template-columns: repeat(3, 1fr); 
         gap: 20px; 
     }
     @media (max-width: 900px) { .tile-grid-preview { grid-template-columns: repeat(2, 1fr); } }
     @media (max-width: 600px) { .tile-grid-preview { grid-template-columns: 1fr; } }
 
-    .tile-card { background: white; border: 1px solid #ddd; border-radius: 6px; overflow: hidden; display: flex; flex-direction: column; position: relative; }
-    .tile-img { height: 160px; background-color: #eee; background-size: cover; background-position: top center; border-bottom: 1px solid #eee; }
-    .tile-body { padding: 15px; flex: 1; display: flex; flex-direction: column; }
-    .tile-title { font-weight: bold; color: #800000; margin-bottom: 5px; font-family: 'Poppins', sans-serif; }
-    .tile-text { font-size: 0.9em; color: #555; }
+    /* TILE CARD MET SCROLL FIX */
+    .tile-card { 
+        background: white; 
+        border: 1px solid #ddd; 
+        border-radius: 6px; 
+        overflow: hidden; 
+        display: flex; 
+        flex-direction: column; 
+        position: relative; 
+        height: 500px; /* Vaste hoogte voor scroll */
+    }
+    .tile-img { height: 160px; background-color: #eee; background-size: cover; background-position: top center; border-bottom: 1px solid #eee; flex-shrink: 0; }
+    .tile-body { padding: 15px; flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+    .tile-title { font-weight: bold; color: #800000; margin-bottom: 10px; font-family: 'Poppins', sans-serif; flex-shrink: 0; }
     
+    /* SCROLLBARE TEKST AREA */
+    .tile-text { 
+        font-size: 0.9em; 
+        color: #555; 
+        flex-grow: 1; 
+        overflow-y: auto; 
+        padding-right: 5px; 
+    }
+    /* Scrollbar styling voor preview */
+    .tile-text::-webkit-scrollbar { width: 6px; }
+    .tile-text::-webkit-scrollbar-track { background: #f1f1f1; }
+    .tile-text::-webkit-scrollbar-thumb { background: #800000; border-radius: 3px; }
+
     /* Delete button on tile */
     .tile-del-btn {
         position: absolute; top: 10px; right: 10px;
@@ -97,7 +119,7 @@
 <div class="container">
     <header>
         <h1>Infofrankrijk Funnel Manager</h1>
-        <div class="version">v28 (Edit & Safe-Mode)</div>
+        <div class="version">v29 (Scroll Fix)</div>
     </header>
 
     <div class="tabs">
@@ -173,7 +195,7 @@ let appData = JSON.parse(JSON.stringify(defaultData));
 let editingIndex = -1; // Houdt bij welke rij we bewerken
 
 function init() {
-    const saved = localStorage.getItem('if_v28_data'); // Nieuwe key voor versie 28
+    const saved = localStorage.getItem('if_v28_data'); 
     if(saved) {
         try { appData = JSON.parse(saved); } catch(e) { console.log(e); }
     }
@@ -209,7 +231,6 @@ function importData() {
 }
 function resetToDefault() {
     if(confirm("Weet je zeker dat je alles wilt wissen en resetten?")) { 
-        // Hier gebruiken we een hardcoded 'Gouden Master' set als voorbeeld, of leeg
         appData = {"tiles":[{"title":"Voorbeeld Tegel","img":"","text":"Dit is een voorbeeld."}],"table":[{"type":"header","name":"Voorbeeld Kop"}]};
         renderTiles(); renderTable(); saveData(); showToast("Gereset!"); 
     }
@@ -240,7 +261,7 @@ function renderTiles() {
             <div class="tile-img" style="background-image:url('${t.img}')"></div>
             <div class="tile-body">
                 <div class="tile-title">${t.title}</div>
-                <div class="tile-text">${t.text.substring(0,60)}...</div>
+                <div class="tile-text">${t.text.replace(/\n/g,'<br>')}</div>
             </div>
         </div>`
     ).join('');
@@ -389,7 +410,7 @@ function generateCode(mode) {
     document.getElementById('finalCode').value = css + out;
     document.getElementById('finalCode').select();
     document.execCommand('copy');
-    showToast("Gekopieerd! (Inclusief Fonts)");
+    showToast("Gekopieerd! (Scroll Fix)");
 }
 
 init();
