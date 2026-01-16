@@ -3,13 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Infofrankrijk Funnel Manager v30</title>
+<title>Infofrankrijk Funnel Manager v31</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
 
 <style>
-    /* --- BASE STYLING (HUISSTIJL) --- */
     :root {
         --primary: #800000;
         --primary-light: rgba(128,0,0,0.1);
@@ -32,7 +31,7 @@
         color: var(--text); 
         line-height: 1.8; 
     }
-    h1, h2, h3, .tab, label, th, .tile-title { 
+    h1, h2, h3, .tab, label, th, .tile-title, .step-title { 
         font-family: 'Poppins', sans-serif; 
     }
     
@@ -46,7 +45,6 @@
         min-height: 80vh; 
     }
     
-    /* Header */
     header { 
         background: var(--primary); 
         color: var(--white); 
@@ -66,16 +64,27 @@
         padding: 2px 8px; 
         border-radius: 4px; 
     }
-    .save-status {
-        font-size: 0.85em;
-        padding: 5px 12px;
-        border-radius: 4px;
+    
+    /* Status indicator */
+    .status-bar {
+        background: #fff3cd;
+        color: #856404;
+        padding: 12px 20px;
+        font-weight: bold;
         display: flex;
         align-items: center;
-        gap: 6px;
+        gap: 10px;
+        font-size: 0.95em;
     }
-    .save-status.saved { background: rgba(39,174,96,0.3); }
-    .save-status.unsaved { background: rgba(243,156,18,0.4); animation: pulse 1.5s infinite; }
+    .status-bar.loaded {
+        background: #d4edda;
+        color: #155724;
+    }
+    .status-bar.unsaved {
+        background: #f8d7da;
+        color: #721c24;
+        animation: pulse 2s infinite;
+    }
     @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.7; } }
     
     /* Tabs */
@@ -95,10 +104,108 @@
     .tab.active { background: var(--white); color: var(--primary); border-top: 4px solid var(--primary); }
     .tab:hover:not(.active) { background: #e0e0e0; }
     .tab-content { padding: 30px; display: none; }
-    .tab-content.active { display: block; animation: fadeIn 0.3s; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+    .tab-content.active { display: block; }
 
-    /* Panels & Forms */
+    /* Step boxes */
+    .step-box {
+        border: 2px solid var(--border);
+        border-radius: 8px;
+        padding: 25px;
+        margin-bottom: 20px;
+        background: var(--white);
+    }
+    .step-box.step-start {
+        border-color: var(--success);
+        background: linear-gradient(135deg, #f0fff4 0%, #fff 100%);
+    }
+    .step-box.step-end {
+        border-color: var(--primary);
+        background: linear-gradient(135deg, #fff5f5 0%, #fff 100%);
+    }
+    .step-title {
+        font-size: 1.3em;
+        margin: 0 0 15px 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .step-start .step-title { color: var(--success); }
+    .step-end .step-title { color: var(--primary); }
+    
+    .step-number {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        color: white;
+        font-size: 1.1em;
+    }
+    .step-start .step-number { background: var(--success); }
+    .step-end .step-number { background: var(--primary); }
+    
+    .step-instructions {
+        background: rgba(0,0,0,0.03);
+        border-radius: 6px;
+        padding: 15px;
+        margin: 15px 0;
+        font-size: 0.95em;
+    }
+    .step-instructions ol {
+        margin: 0;
+        padding-left: 20px;
+    }
+    .step-instructions li {
+        margin-bottom: 8px;
+    }
+    
+    /* Buttons */
+    .btn { 
+        padding: 12px 20px; 
+        border: none; 
+        border-radius: 4px; 
+        font-weight: bold; 
+        cursor: pointer; 
+        transition: 0.2s; 
+        font-size: 1em; 
+        display: inline-flex; 
+        align-items: center; 
+        justify-content: center; 
+        gap: 8px; 
+        text-decoration: none; 
+        color: var(--white); 
+        font-family: 'Poppins', sans-serif; 
+        line-height: 1.4;
+    }
+    .btn-keep {
+        background: #fbbc04;
+        color: #333;
+        font-size: 1.1em;
+        padding: 15px 25px;
+    }
+    .btn-keep:hover { background: #f9a825; transform: translateY(-1px); }
+    .btn-primary { background: var(--primary); }
+    .btn-primary:hover { background: var(--primary-hover); transform: translateY(-1px); }
+    .btn-success { background: var(--success); }
+    .btn-success:hover { background: #219a52; transform: translateY(-1px); }
+    .btn-secondary { background: #6c757d; }
+    .btn-danger { background: #fee2e2; color: var(--danger); }
+    .btn-danger:hover { background: #fecaca; }
+    .btn-update { background: #2980b9; display: none; }
+    
+    .btn-icon { 
+        padding: 6px 10px; 
+        font-size: 0.9em; 
+        cursor: pointer; 
+        border-radius: 4px; 
+        border: 1px solid var(--border); 
+        background: var(--white); 
+    }
+    .btn-icon:hover { background: #f0f0f0; }
+    
+    /* Form elements */
     .panel { 
         background: #f8f9fa; 
         border: 1px solid #e9ecef; 
@@ -135,113 +242,15 @@
         font-family: 'Mulish', sans-serif; 
         line-height: 1.6;
     }
-    textarea { height: 120px; resize: vertical; }
-    
-    /* Buttons */
-    .btn { 
-        padding: 10px 18px; 
-        border: none; 
-        border-radius: 4px; 
-        font-weight: bold; 
-        cursor: pointer; 
-        transition: 0.2s; 
-        font-size: 0.95em; 
-        display: inline-flex; 
-        align-items: center; 
-        justify-content: center; 
-        gap: 5px; 
-        text-decoration: none; 
-        color: var(--white); 
-        font-family: 'Poppins', sans-serif; 
-        line-height: 1.4;
-    }
-    .btn-primary { background: var(--primary); }
-    .btn-primary:hover { background: var(--primary-hover); transform: translateY(-1px); }
-    .btn-secondary { background: #6c757d; }
-    .btn-secondary:hover { background: #5a6268; }
-    .btn-success { background: var(--success); }
-    .btn-success:hover { background: #219a52; }
-    .btn-warning { background: var(--warning); color: #333; }
-    .btn-warning:hover { background: #e0a800; }
-    .btn-danger { background: #fee2e2; color: var(--danger); }
-    .btn-danger:hover { background: #fecaca; }
-    .btn-update { background: #2980b9; display: none; }
-    .btn-update:hover { background: #2472a4; }
-    
-    .btn-icon { 
-        padding: 6px 10px; 
-        font-size: 0.9em; 
-        margin-left: 5px; 
-        cursor: pointer; 
-        border-radius: 4px; 
-        border: 1px solid var(--border); 
-        background: var(--white); 
-    }
-    .btn-icon:hover { background: #f0f0f0; }
-
-    /* Backup Section */
-    .backup-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        gap: 20px;
-        margin-bottom: 20px;
-    }
-    .backup-card {
-        background: var(--white);
-        border: 1px solid var(--border);
-        border-radius: 8px;
-        padding: 20px;
-    }
-    .backup-card h3 {
-        margin: 0 0 15px 0;
-        color: var(--primary);
-        font-size: 1em;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-    .backup-card textarea {
-        height: 80px;
+    textarea { height: 100px; resize: vertical; }
+    textarea.json-area {
         font-family: monospace;
         font-size: 0.85em;
+        background: #1a202c;
+        color: #9ae6b4;
+        height: 120px;
     }
-    .backup-card .btn { margin-top: 10px; width: 100%; }
-    
-    /* Drop Zone */
-    .drop-zone {
-        border: 2px dashed var(--border);
-        border-radius: 8px;
-        padding: 30px;
-        text-align: center;
-        transition: 0.3s;
-        cursor: pointer;
-    }
-    .drop-zone:hover, .drop-zone.dragover {
-        border-color: var(--primary);
-        background: var(--primary-light);
-    }
-    .drop-zone-icon { font-size: 2em; margin-bottom: 10px; }
-    .drop-zone input[type="file"] { display: none; }
-    
-    /* History Panel */
-    .history-list {
-        max-height: 200px;
-        overflow-y: auto;
-        border: 1px solid var(--border);
-        border-radius: 4px;
-    }
-    .history-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 10px 15px;
-        border-bottom: 1px solid #f0f0f0;
-        font-size: 0.9em;
-    }
-    .history-item:last-child { border-bottom: none; }
-    .history-item:hover { background: #f9f9f9; }
-    .history-item .btn { padding: 5px 10px; font-size: 0.8em; }
-    
+
     /* Output Options */
     .output-options { 
         display: grid; 
@@ -252,15 +261,13 @@
     .btn-opt { 
         padding: 20px; 
         font-size: 1.1em; 
-        border: 2px solid transparent; 
-        color: var(--white); 
     }
     .btn-opt:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
     .opt-all { background: var(--success); }
     .opt-tiles { background: #2980b9; }
     .opt-table { background: #e67e22; }
 
-    /* Tile Grid Preview */
+    /* Tile Grid */
     .tile-grid-preview { 
         display: grid; 
         grid-template-columns: repeat(3, 1fr); 
@@ -269,7 +276,6 @@
     @media (max-width: 900px) { .tile-grid-preview { grid-template-columns: repeat(2, 1fr); } }
     @media (max-width: 600px) { .tile-grid-preview { grid-template-columns: 1fr; } }
 
-    /* Tile Card */
     .tile-card { 
         background: var(--white); 
         border: 1px solid var(--border); 
@@ -281,9 +287,7 @@
         height: 500px;
         transition: 0.2s;
     }
-    .tile-card.editing {
-        box-shadow: 0 0 0 3px var(--primary);
-    }
+    .tile-card.editing { box-shadow: 0 0 0 3px var(--primary); }
     .tile-img { 
         height: 160px; 
         background-color: #eee; 
@@ -319,7 +323,6 @@
     .tile-text::-webkit-scrollbar-track { background: #f1f1f1; }
     .tile-text::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 3px; }
 
-    /* Tile Action Buttons */
     .tile-actions {
         position: absolute;
         top: 10px;
@@ -334,7 +337,6 @@
         width: 32px;
         height: 32px;
         border-radius: 50%;
-        font-weight: bold;
         cursor: pointer;
         box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         display: flex;
@@ -348,7 +350,7 @@
     .tile-btn-del { color: var(--danger); }
     .tile-btn-del:hover { background: var(--danger); color: var(--white); }
 
-    /* Table Preview (HUISSTIJL) */
+    /* Table */
     .table-preview { 
         width: 100%; 
         border-collapse: collapse; 
@@ -401,7 +403,6 @@
         left: 50%; 
         bottom: 30px; 
         font-family: 'Poppins', sans-serif;
-        line-height: 1.4;
     }
     #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
     @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} }
@@ -412,6 +413,7 @@
         header { padding: 15px; }
         .tab-content { padding: 15px; }
         .tab { padding: 10px 12px; font-size: 0.85em; }
+        .step-box { padding: 15px; }
     }
 </style>
 </head>
@@ -421,72 +423,88 @@
     <header>
         <h1>Infofrankrijk Funnel Manager</h1>
         <div class="header-right">
-            <div id="saveStatus" class="save-status saved">
-                <span>✓</span>
-                <span id="saveTime">Opgeslagen</span>
-            </div>
-            <div class="version">v30</div>
+            <div class="version">v31</div>
         </div>
     </header>
 
+    <div id="statusBar" class="status-bar">
+        ⚠️ Start altijd met STAP 1: laad eerst de data uit Keep!
+    </div>
+
     <div class="tabs">
-        <button class="tab active" onclick="switchTab('backup')">1. BACKUP</button>
-        <button class="tab" onclick="switchTab('tiles')">2. TEGELS</button>
-        <button class="tab" onclick="switchTab('table')">3. TABEL</button>
-        <button class="tab" onclick="switchTab('code')">4. CODE</button>
+        <button class="tab active" onclick="switchTab('backup')">💾 BACKUP</button>
+        <button class="tab" onclick="switchTab('tiles')">🖼️ TEGELS</button>
+        <button class="tab" onclick="switchTab('table')">📊 TABEL</button>
+        <button class="tab" onclick="switchTab('code')">📦 CODE</button>
     </div>
 
-    <!-- TAB 1: BACKUP -->
+    <!-- TAB: BACKUP -->
     <div id="tab-backup" class="tab-content active">
-        <div class="backup-grid">
-            <!-- Download -->
-            <div class="backup-card">
-                <h3>📥 Download Backup</h3>
-                <p style="margin:0 0 15px; color:#666; font-size:0.9em;">Download je data als JSON-bestand. Veilig op je computer.</p>
-                <button class="btn btn-success" onclick="downloadJSON()" style="width:100%;">⬇️ Download JSON</button>
+        
+        <!-- STAP 1 -->
+        <div class="step-box step-start">
+            <h2 class="step-title">
+                <span class="step-number">1</span>
+                BEGIN HIER — Data ophalen
+            </h2>
+            
+            <div class="step-instructions">
+                <ol>
+                    <li><strong>Klik op "Open Keep"</strong> hieronder</li>
+                    <li><strong>Selecteer en kopieer</strong> alle tekst in de Keep-notitie (Ctrl+A, Ctrl+C)</li>
+                    <li><strong>Plak</strong> in het veld hieronder (Ctrl+V)</li>
+                    <li><strong>Klik "Data Laden"</strong></li>
+                </ol>
             </div>
             
-            <!-- Upload -->
-            <div class="backup-card">
-                <h3>📤 Upload Backup</h3>
-                <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
-                    <div class="drop-zone-icon">📁</div>
-                    <p style="margin:0;">Sleep JSON-bestand hierheen<br><small>of klik om te selecteren</small></p>
-                    <input type="file" id="fileInput" accept=".json" onchange="handleFileUpload(event)">
-                </div>
+            <a href="https://keep.google.com/#NOTE/19zNWkbyH7Ou878ICDUN6DQjTCJzadyE7LvUlsKwnqtnnE7Jwt-31gtf7u0CyZskj" target="_blank" class="btn btn-keep">📝 Open Keep</a>
+            
+            <div style="margin-top:20px;">
+                <label>Plak hier de JSON uit Keep:</label>
+                <textarea id="importArea" class="json-area" placeholder='Plak hier de JSON... (begint met { en eindigt met })'></textarea>
+                <button class="btn btn-success" onclick="importData()" style="margin-top:10px;">✅ Data Laden</button>
+            </div>
+        </div>
+
+        <!-- STAP 2 -->
+        <div class="step-box step-end">
+            <h2 class="step-title">
+                <span class="step-number">2</span>
+                KLAAR? — Data opslaan
+            </h2>
+            
+            <div class="step-instructions">
+                <ol>
+                    <li><strong>Klik "Kopieer Data"</strong> hieronder</li>
+                    <li><strong>Klik op "Open Keep"</strong></li>
+                    <li><strong>Selecteer alle oude tekst</strong> in Keep (Ctrl+A)</li>
+                    <li><strong>Plak</strong> de nieuwe data (Ctrl+V) — dit overschrijft de oude</li>
+                    <li>Keep slaat automatisch op ✓</li>
+                </ol>
             </div>
             
-            <!-- Handmatig -->
-            <div class="backup-card">
-                <h3>📋 Handmatig (Kopiëren/Plakken)</h3>
-                <label>Huidige data:</label>
-                <textarea id="exportArea" readonly onclick="this.select()" style="background:#1a202c; color:#9ae6b4;"></textarea>
-                <div style="display:flex; gap:10px;">
-                    <button class="btn btn-primary" onclick="copyExport()" style="flex:1;">📋 Kopieer</button>
-                </div>
-                <div style="margin-top:15px;">
-                    <label>Data importeren:</label>
-                    <textarea id="importArea" placeholder="Plak JSON hier..."></textarea>
-                    <button class="btn btn-warning" onclick="importFromText()">📥 Importeer</button>
-                </div>
+            <div style="margin-bottom:15px;">
+                <label>Huidige data (kopieer dit naar Keep):</label>
+                <textarea id="exportArea" class="json-area" readonly onclick="this.select()"></textarea>
+            </div>
+            
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                <button class="btn btn-primary" onclick="copyExport()">📋 Kopieer Data</button>
+                <a href="https://keep.google.com/#NOTE/19zNWkbyH7Ou878ICDUN6DQjTCJzadyE7LvUlsKwnqtnnE7Jwt-31gtf7u0CyZskj" target="_blank" class="btn btn-keep">📝 Open Keep</a>
             </div>
         </div>
-        
-        <!-- History -->
-        <div class="panel">
-            <h3 class="panel-title">🕐 Versiegeschiedenis (laatste 5)</h3>
-            <div class="history-list" id="historyList">
-                <p style="padding:15px; color:#666; margin:0;">Nog geen geschiedenis beschikbaar.</p>
+
+        <!-- Extra opties -->
+        <details style="margin-top:20px;">
+            <summary style="cursor:pointer; color:#666; font-size:0.9em;">⚙️ Extra opties (backup bestand, reset)</summary>
+            <div style="padding:15px; background:#f8f9fa; border-radius:6px; margin-top:10px;">
+                <button class="btn btn-secondary" onclick="downloadJSON()" style="margin-right:10px;">⬇️ Download JSON bestand</button>
+                <button class="btn btn-danger" onclick="resetData()">🗑️ Alles wissen</button>
             </div>
-        </div>
-        
-        <!-- Danger Zone -->
-        <div style="text-align:right; margin-top:20px; padding-top:20px; border-top:1px solid #eee;">
-            <button class="btn btn-danger" onclick="resetToDefault()">🔴 Reset naar leeg</button>
-        </div>
+        </details>
     </div>
 
-    <!-- TAB 2: TEGELS -->
+    <!-- TAB: TEGELS -->
     <div id="tab-tiles" class="tab-content">
         <div class="panel">
             <h3 class="panel-title" id="tilePanelTitle">➕ Nieuwe Tegel</h3>
@@ -502,18 +520,18 @@
             </div>
             <div class="form-group">
                 <label>Tekst</label>
-                <textarea id="tileText" placeholder="Beschrijving..."></textarea>
+                <textarea id="tileText" placeholder="Beschrijving..." style="height:150px;"></textarea>
             </div>
             <div style="display:flex; gap:10px; margin-top:15px;">
                 <button id="btnTileAdd" class="btn btn-primary" onclick="addTile()">+ Toevoegen</button>
-                <button id="btnTileUpdate" class="btn btn-update" onclick="updateTile()">💾 Wijziging Opslaan</button>
+                <button id="btnTileUpdate" class="btn btn-update" onclick="updateTile()">💾 Opslaan</button>
                 <button id="btnTileCancel" class="btn btn-secondary" style="display:none;" onclick="cancelTileEdit()">Annuleren</button>
             </div>
         </div>
         <div id="tileList" class="tile-grid-preview"></div>
     </div>
 
-    <!-- TAB 3: TABEL -->
+    <!-- TAB: TABEL -->
     <div id="tab-table" class="tab-content">
         <div class="panel">
             <h3 class="panel-title" id="tablePanelTitle">➕ Nieuwe Rij</h3>
@@ -544,7 +562,7 @@
             </div>
             <div style="display:flex; gap:10px; margin-top:15px;">
                 <button id="btnTableAdd" class="btn btn-primary" onclick="addTableRow()">+ Toevoegen</button>
-                <button id="btnTableUpdate" class="btn btn-update" onclick="updateTableRow()">💾 Wijziging Opslaan</button>
+                <button id="btnTableUpdate" class="btn btn-update" onclick="updateTableRow()">💾 Opslaan</button>
                 <button id="btnTableCancel" class="btn btn-secondary" style="display:none;" onclick="cancelTableEdit()">Annuleren</button>
             </div>
         </div>
@@ -562,14 +580,18 @@
         </table>
     </div>
 
-    <!-- TAB 4: CODE -->
+    <!-- TAB: CODE -->
     <div id="tab-code" class="tab-content">
+        <div style="background:#e8f5e9; border:1px solid #a5d6a7; border-radius:6px; padding:15px; margin-bottom:20px;">
+            ✅ <strong>Hier kun je niets kapotmaken.</strong> Code genereren maakt alleen een kopie voor je website.
+        </div>
+        
         <div class="output-options">
             <button class="btn btn-opt opt-all" onclick="generateCode('all')">📦 ALLES</button>
             <button class="btn btn-opt opt-tiles" onclick="generateCode('tiles')">🖼️ ALLEEN TEGELS</button>
             <button class="btn btn-opt opt-table" onclick="generateCode('table')">📊 ALLEEN TABEL</button>
         </div>
-        <textarea id="finalCode" style="width:100%; height:350px; border:1px solid #ddd; padding:15px; font-family:monospace; font-size:0.85em; line-height:1.6;" readonly onclick="this.select()" placeholder="Klik hierboven om code te genereren..."></textarea>
+        <textarea id="finalCode" style="width:100%; height:300px; border:1px solid #ddd; padding:15px; font-family:monospace; font-size:0.85em;" readonly onclick="this.select()" placeholder="Klik hierboven om code te genereren..."></textarea>
         <p style="margin-top:10px; color:#666; font-size:0.9em;">💡 Code wordt automatisch gekopieerd naar je klembord.</p>
     </div>
 </div>
@@ -580,72 +602,66 @@
 /* ========================================
    DATA & STATE
 ======================================== */
-const STORAGE_KEY = 'if_v30_data';
-const HISTORY_KEY = 'if_v30_history';
-const MAX_HISTORY = 5;
-
+const STORAGE_KEY = 'if_v31_data';
 let appData = { tiles: [], table: [] };
+let dataLoaded = false;
+let hasChanges = false;
 let editingTileIndex = -1;
 let editingTableIndex = -1;
-let hasUnsavedChanges = false;
 
 /* ========================================
-   INITIALIZATION
+   INIT
 ======================================== */
 function init() {
-    loadData();
-    loadHistory();
+    // Laad uit localStorage als backup
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+        try { 
+            appData = JSON.parse(saved); 
+        } catch(e) {}
+    }
+    
     renderTiles();
     renderTable();
     updateExportArea();
-    updateSaveStatus(true);
-    setupDragDrop();
-    setupBeforeUnload();
-}
-
-function setupBeforeUnload() {
+    updateStatus();
+    
+    // Waarschuw bij verlaten met onopgeslagen wijzigingen
     window.addEventListener('beforeunload', (e) => {
-        if (hasUnsavedChanges) {
+        if (hasChanges) {
             e.preventDefault();
-            e.returnValue = 'Je hebt onopgeslagen wijzigingen. Weet je zeker dat je wilt vertrekken?';
+            e.returnValue = 'Je hebt wijzigingen nog niet naar Keep gekopieerd!';
         }
     });
 }
 
-function setupDragDrop() {
-    const dropZone = document.getElementById('dropZone');
+/* ========================================
+   STATUS
+======================================== */
+function updateStatus() {
+    const bar = document.getElementById('statusBar');
     
-    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(evt => {
-        dropZone.addEventListener(evt, preventDefaults, false);
-    });
-    
-    function preventDefaults(e) {
-        e.preventDefault();
-        e.stopPropagation();
+    if (!dataLoaded) {
+        bar.className = 'status-bar';
+        bar.innerHTML = '⚠️ Start altijd met STAP 1: laad eerst de data uit Keep!';
+    } else if (hasChanges) {
+        bar.className = 'status-bar unsaved';
+        bar.innerHTML = '🔴 Je hebt wijzigingen! Vergeet niet STAP 2: kopieer naar Keep voordat je afsluit.';
+    } else {
+        bar.className = 'status-bar loaded';
+        bar.innerHTML = '✅ Data geladen. Na wijzigingen: vergeet STAP 2 niet!';
     }
-    
-    ['dragenter', 'dragover'].forEach(evt => {
-        dropZone.addEventListener(evt, () => dropZone.classList.add('dragover'));
-    });
-    
-    ['dragleave', 'drop'].forEach(evt => {
-        dropZone.addEventListener(evt, () => dropZone.classList.remove('dragover'));
-    });
-    
-    dropZone.addEventListener('drop', handleDrop);
 }
 
-function handleDrop(e) {
-    const file = e.dataTransfer.files[0];
-    if (file && file.type === 'application/json') {
-        readFile(file);
-    } else {
-        showToast('⚠️ Alleen JSON-bestanden toegestaan');
-    }
+function markChanged() {
+    hasChanges = true;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
+    updateExportArea();
+    updateStatus();
 }
 
 /* ========================================
-   TAB NAVIGATION
+   TABS
 ======================================== */
 function switchTab(id) {
     document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
@@ -655,128 +671,54 @@ function switchTab(id) {
 }
 
 /* ========================================
-   DATA MANAGEMENT
+   IMPORT / EXPORT
 ======================================== */
-function loadData() {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-        try {
-            appData = JSON.parse(saved);
-        } catch (e) {
-            console.error('Error loading data:', e);
-        }
-    }
-}
-
-function saveData(addToHistory = true) {
-    if (addToHistory) {
-        addToHistoryStack();
-    }
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
-    updateExportArea();
-    updateSaveStatus(true);
-    hasUnsavedChanges = false;
-}
-
-function markUnsaved() {
-    hasUnsavedChanges = true;
-    updateSaveStatus(false);
-}
-
-function updateSaveStatus(saved) {
-    const statusEl = document.getElementById('saveStatus');
-    const timeEl = document.getElementById('saveTime');
+function importData() {
+    const raw = document.getElementById('importArea').value.trim();
     
-    if (saved) {
-        statusEl.className = 'save-status saved';
-        const now = new Date();
-        timeEl.textContent = `Opgeslagen ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
-        statusEl.querySelector('span:first-child').textContent = '✓';
-    } else {
-        statusEl.className = 'save-status unsaved';
-        timeEl.textContent = 'Niet opgeslagen';
-        statusEl.querySelector('span:first-child').textContent = '⚠';
+    if (!raw) {
+        alert('Plak eerst de JSON uit Keep in het veld.');
+        return;
+    }
+    
+    if (!raw.startsWith('{') || !raw.endsWith('}')) {
+        alert('Dit lijkt geen geldige JSON.\n\nZorg dat je ALLE tekst uit Keep kopieert, inclusief de { aan het begin en } aan het einde.');
+        return;
+    }
+    
+    try {
+        appData = JSON.parse(raw);
+        dataLoaded = true;
+        hasChanges = false;
+        
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
+        
+        renderTiles();
+        renderTable();
+        updateExportArea();
+        updateStatus();
+        
+        document.getElementById('importArea').value = '';
+        showToast('✅ Data geladen! Je kunt nu werken.');
+        
+    } catch(e) {
+        alert('Fout bij laden:\n\n' + e.message + '\n\nControleer of je alle tekst hebt gekopieerd.');
     }
 }
 
 function updateExportArea() {
-    document.getElementById('exportArea').value = JSON.stringify(appData, null, 2);
+    document.getElementById('exportArea').value = JSON.stringify(appData);
 }
 
-/* ========================================
-   HISTORY MANAGEMENT
-======================================== */
-function loadHistory() {
-    renderHistory();
+function copyExport() {
+    const area = document.getElementById('exportArea');
+    area.select();
+    document.execCommand('copy');
+    hasChanges = false;
+    updateStatus();
+    showToast('📋 Gekopieerd! Plak nu in Keep.');
 }
 
-function addToHistoryStack() {
-    let history = [];
-    try {
-        const saved = localStorage.getItem(HISTORY_KEY);
-        if (saved) history = JSON.parse(saved);
-    } catch (e) {}
-    
-    history.unshift({
-        timestamp: new Date().toISOString(),
-        data: JSON.parse(JSON.stringify(appData))
-    });
-    
-    if (history.length > MAX_HISTORY) {
-        history = history.slice(0, MAX_HISTORY);
-    }
-    
-    localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
-    renderHistory();
-}
-
-function renderHistory() {
-    const container = document.getElementById('historyList');
-    let history = [];
-    
-    try {
-        const saved = localStorage.getItem(HISTORY_KEY);
-        if (saved) history = JSON.parse(saved);
-    } catch (e) {}
-    
-    if (history.length === 0) {
-        container.innerHTML = '<p style="padding:15px; color:#666; margin:0;">Nog geen geschiedenis beschikbaar.</p>';
-        return;
-    }
-    
-    container.innerHTML = history.map((h, i) => {
-        const date = new Date(h.timestamp);
-        const formatted = `${date.toLocaleDateString('nl-NL')} ${date.getHours().toString().padStart(2,'0')}:${date.getMinutes().toString().padStart(2,'0')}`;
-        const tileCount = h.data.tiles ? h.data.tiles.length : 0;
-        const tableCount = h.data.table ? h.data.table.length : 0;
-        
-        return `<div class="history-item">
-            <span>${formatted} — ${tileCount} tegels, ${tableCount} tabelrijen</span>
-            <button class="btn btn-secondary" onclick="restoreHistory(${i})">Herstel</button>
-        </div>`;
-    }).join('');
-}
-
-function restoreHistory(index) {
-    let history = [];
-    try {
-        history = JSON.parse(localStorage.getItem(HISTORY_KEY));
-    } catch (e) { return; }
-    
-    if (history[index]) {
-        if (confirm('Huidige data wordt vervangen door deze versie. Doorgaan?')) {
-            appData = JSON.parse(JSON.stringify(history[index].data));
-            renderTiles();
-            renderTable();
-            saveData(false);
-            showToast('✓ Versie hersteld');
-        }
-    }
-}
-
-/* ========================================
-   IMPORT / EXPORT
-======================================== */
 function downloadJSON() {
     const blob = new Blob([JSON.stringify(appData, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
@@ -785,89 +727,37 @@ function downloadJSON() {
     a.download = `funnel-backup-${new Date().toISOString().slice(0,10)}.json`;
     a.click();
     URL.revokeObjectURL(url);
-    showToast('✓ Backup gedownload');
+    showToast('⬇️ Bestand gedownload');
 }
 
-function handleFileUpload(event) {
-    const file = event.target.files[0];
-    if (file) readFile(file);
-}
-
-function readFile(file) {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-        try {
-            const data = JSON.parse(e.target.result);
-            if (confirm('Huidige data wordt vervangen. Doorgaan?')) {
-                appData = data;
-                renderTiles();
-                renderTable();
-                saveData();
-                showToast('✓ Data geladen uit bestand');
-            }
-        } catch (err) {
-            alert('Fout bij lezen van bestand: ' + err.message);
-        }
-    };
-    reader.readAsText(file);
-}
-
-function copyExport() {
-    document.getElementById('exportArea').select();
-    document.execCommand('copy');
-    showToast('✓ Gekopieerd naar klembord');
-}
-
-function importFromText() {
-    const raw = document.getElementById('importArea').value.trim();
-    if (!raw) {
-        alert('Plak eerst JSON data in het veld.');
-        return;
-    }
-    
-    try {
-        const data = JSON.parse(raw);
-        if (confirm('Huidige data wordt vervangen. Doorgaan?')) {
-            appData = data;
-            renderTiles();
-            renderTable();
-            saveData();
-            document.getElementById('importArea').value = '';
-            showToast('✓ Data geïmporteerd');
-        }
-    } catch (e) {
-        alert('Ongeldige JSON: ' + e.message);
-    }
-}
-
-function resetToDefault() {
-    if (confirm('ALLES wissen en opnieuw beginnen?')) {
+function resetData() {
+    if (confirm('ALLES wissen?\n\nDit verwijdert alle tegels en tabelrijen.\nDe data in Keep blijft bestaan.')) {
         appData = { tiles: [], table: [] };
+        hasChanges = true;
         renderTiles();
         renderTable();
-        saveData();
-        showToast('Data gewist');
+        markChanged();
+        showToast('🗑️ Data gewist');
     }
 }
 
 /* ========================================
-   TILES MANAGEMENT
+   TILES
 ======================================== */
 function addTile() {
     const title = document.getElementById('tileTitle').value.trim();
-    const img = document.getElementById('tileImg').value.trim();
-    const text = document.getElementById('tileText').value.trim();
+    if (!title) { alert('Titel is verplicht'); return; }
     
-    if (!title) {
-        alert('Titel is verplicht');
-        return;
-    }
+    appData.tiles.push({
+        title: title,
+        img: document.getElementById('tileImg').value.trim(),
+        text: document.getElementById('tileText').value.trim()
+    });
     
-    appData.tiles.push({ title, img, text });
     clearTileForm();
     renderTiles();
-    saveData();
-    showToast('✓ Tegel toegevoegd');
+    markChanged();
+    showToast('✅ Tegel toegevoegd');
 }
 
 function editTile(idx) {
@@ -898,19 +788,17 @@ function updateTile() {
     
     cancelTileEdit();
     renderTiles();
-    saveData();
-    showToast('✓ Tegel aangepast');
+    markChanged();
+    showToast('✅ Tegel aangepast');
 }
 
 function cancelTileEdit() {
     editingTileIndex = -1;
     clearTileForm();
-    
     document.getElementById('tilePanelTitle').textContent = '➕ Nieuwe Tegel';
     document.getElementById('btnTileAdd').style.display = 'inline-flex';
     document.getElementById('btnTileUpdate').style.display = 'none';
     document.getElementById('btnTileCancel').style.display = 'none';
-    
     renderTiles();
 }
 
@@ -925,8 +813,8 @@ function deleteTile(idx) {
         appData.tiles.splice(idx, 1);
         if (editingTileIndex === idx) cancelTileEdit();
         renderTiles();
-        saveData();
-        showToast('Tegel verwijderd');
+        markChanged();
+        showToast('🗑️ Tegel verwijderd');
     }
 }
 
@@ -934,7 +822,7 @@ function renderTiles() {
     const container = document.getElementById('tileList');
     
     if (appData.tiles.length === 0) {
-        container.innerHTML = '<p style="color:#666; grid-column:1/-1;">Nog geen tegels. Voeg er een toe hierboven.</p>';
+        container.innerHTML = '<p style="color:#666; grid-column:1/-1;">Nog geen tegels.</p>';
         return;
     }
     
@@ -954,20 +842,17 @@ function renderTiles() {
 }
 
 /* ========================================
-   TABLE MANAGEMENT
+   TABLE
 ======================================== */
 function addTableRow() {
-    const row = getTableFormData();
-    if (!row.name) {
-        alert('Naam is verplicht');
-        return;
-    }
+    const name = document.getElementById('rowName').value.trim();
+    if (!name) { alert('Naam is verplicht'); return; }
     
-    appData.table.push(row);
+    appData.table.push(getTableFormData());
     clearTableForm();
     renderTable();
-    saveData();
-    showToast('✓ Rij toegevoegd');
+    markChanged();
+    showToast('✅ Rij toegevoegd');
 }
 
 function editRow(idx) {
@@ -995,19 +880,17 @@ function updateTableRow() {
     appData.table[editingTableIndex] = getTableFormData();
     cancelTableEdit();
     renderTable();
-    saveData();
-    showToast('✓ Rij aangepast');
+    markChanged();
+    showToast('✅ Rij aangepast');
 }
 
 function cancelTableEdit() {
     editingTableIndex = -1;
     clearTableForm();
-    
     document.getElementById('tablePanelTitle').textContent = '➕ Nieuwe Rij';
     document.getElementById('btnTableAdd').style.display = 'inline-flex';
     document.getElementById('btnTableUpdate').style.display = 'none';
     document.getElementById('btnTableCancel').style.display = 'none';
-    
     renderTable();
 }
 
@@ -1034,8 +917,8 @@ function deleteRow(idx) {
         appData.table.splice(idx, 1);
         if (editingTableIndex === idx) cancelTableEdit();
         renderTable();
-        saveData();
-        showToast('Rij verwijderd');
+        markChanged();
+        showToast('🗑️ Rij verwijderd');
     }
 }
 
@@ -1043,7 +926,7 @@ function renderTable() {
     const container = document.getElementById('tableList');
     
     if (appData.table.length === 0) {
-        container.innerHTML = '<tr><td colspan="4" style="color:#666; padding:20px;">Nog geen rijen. Voeg er een toe hierboven.</td></tr>';
+        container.innerHTML = '<tr><td colspan="4" style="color:#666; padding:20px;">Nog geen rijen.</td></tr>';
         return;
     }
     
@@ -1117,7 +1000,6 @@ function generateCode(mode) {
 .if-intro{font-size:18px;color:#555;margin:0 0 25px 0;line-height:1.8}
 </style>`;
 
-    // Tiles HTML
     let tiles = '<div class="if-grid">';
     appData.tiles.forEach(t => {
         tiles += `<div class="if-card">
@@ -1134,7 +1016,6 @@ function generateCode(mode) {
     });
     tiles += '</div>';
 
-    // Table HTML
     let tbl = `<div class="if-tbl-container">
 <table class="if-tbl">
 <thead>
@@ -1198,11 +1079,11 @@ ${ctaButton}
     document.getElementById('finalCode').value = finalCode;
     document.getElementById('finalCode').select();
     document.execCommand('copy');
-    showToast('✓ Code gekopieerd naar klembord');
+    showToast('📋 Code gekopieerd!');
 }
 
 /* ========================================
-   UTILITIES
+   TOAST
 ======================================== */
 function showToast(msg) {
     const toast = document.getElementById('toast');
@@ -1211,7 +1092,7 @@ function showToast(msg) {
     setTimeout(() => { toast.className = ''; }, 3000);
 }
 
-// Initialize
+// Start
 init();
 </script>
 
